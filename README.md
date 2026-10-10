@@ -1,6 +1,6 @@
 # ShiftOps AI
 
-ShiftOps AI is a planned human-approved workforce scheduling assistant built on the existing ShiftFlow application. This repository currently contains **Phase 0 foundation only**: the preserved ShiftFlow baseline, project documentation, environment contracts, a synthetic fixture, and a database-independent ShiftOps health endpoint. Candidate evaluation, proposals, AI inference, approval, schedule mutation, and audit behavior are not implemented yet.
+ShiftOps AI is a planned human-approved workforce scheduling assistant built on the existing ShiftFlow application. Phase 1 adds a backend-only, read-only eligibility and ranking module over the preserved ShiftFlow model. Proposals, approval, AI inference, schedule mutation, audit persistence, APIs, and UI are not implemented yet.
 
 ## Source and status
 
@@ -8,7 +8,7 @@ ShiftOps AI is a planned human-approved workforce scheduling assistant built on 
 - Team: Synqvera Labs
 - Source snapshot: `123114-robot/ShiftFlow`, commit `6ea907b742c547bd8e8941e64afddf089daf733f`
 - Source branch at snapshot: `codex/phase-9-basic-dashboard`
-- Current delivery state: Phase 0 foundation; not submission-ready
+- Current delivery state: Phase 1 eligibility module; not wired to an API and not submission-ready
 
 The source snapshot uses React, TypeScript, Vite, Express, Prisma, PostgreSQL, Vitest, Supertest, and GitHub Actions. Its existing authentication, RBAC, scheduling rules, leave, roster, and dashboard logic are preserved.
 
@@ -29,6 +29,8 @@ Health endpoints:
 
 - Existing ShiftFlow: `GET http://localhost:3000/api/health`
 - Phase 0 ShiftOps: `GET http://localhost:3000/api/shiftops/health`
+
+Phase 1 eligibility is intentionally an internal service. It checks active status, full-shift availability, approved leave, overlaps, optional exact role match, and a configurable weekly-minute limit. Eligible candidates are ranked by remaining weekly minutes after the proposed shift, then by `employeeId` for deterministic ties.
 
 For the complete preserved application, start PostgreSQL with `docker compose up -d postgres`, then run `npm run db:push` and `npm run db:seed`. Never use sample credentials outside local development.
 

@@ -30,3 +30,11 @@
 - Competition track selection and Evolus participation.
 - Exact AMD Developer Cloud/vLLM model and evidence method.
 - Minimal persistence additions for incident/proposal/audit, after Phase 1 design inspection.
+
+## ADR-005 — Read-only deterministic eligibility boundary
+
+- Status: Accepted, 2026-10-11
+- Decision: Add a pure eligibility service behind a read-only repository contract, with a Prisma adapter over existing ShiftFlow records and no API or schema change.
+- Rationale: Keeps business-rule evaluation testable and prevents Phase 1 from acquiring mutation or authorization responsibilities.
+- Ranking: eligible candidates receive their remaining configured weekly minutes after the proposed shift; ties use `employeeId` ascending.
+- Consequence: role matching is exact and opt-in, and the caller must provide the configurable weekly-minute ceiling. Legal compliance is not implied.
