@@ -1,0 +1,7 @@
+export type LeaveRequest={id:string;employeeId:string;startDate:string;endDate:string;reason:string;status:'PENDING'|'APPROVED'|'REJECTED';reviewedById:string|null;reviewedAt:string|null;createdAt:string;updatedAt:string};
+const baseUrl=import.meta.env.VITE_API_URL??'http://localhost:3000/api';
+async function leaveRequest<T>(path:string,token:string,init:RequestInit={}){const response=await fetch(`${baseUrl}${path}`,{...init,headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json',...init.headers}});if(!response.ok){const body=await response.json().catch(()=>null) as {error?:{message?:string}}|null;throw new Error(body?.error?.message??'Leave request failed.');}return response.json() as Promise<T>;}
+export async function listMyLeave(token:string){return(await leaveRequest<{leaveRequests:LeaveRequest[]}>('/leave-requests/me',token)).leaveRequests;}
+export async function submitLeave(token:string,input:{startDate:string;endDate:string;reason:string}){return(await leaveRequest<{leaveRequest:LeaveRequest}>('/leave-requests',token,{method:'POST',body:JSON.stringify(input)})).leaveRequest;}
+export async function listLeave(token:string){return(await leaveRequest<{leaveRequests:LeaveRequest[]}>('/leave-requests',token)).leaveRequests;}
+export async function reviewLeave(token:string,id:string,status:'APPROVED'|'REJECTED'){return(await leaveRequest<{leaveRequest:LeaveRequest}>(`/leave-requests/${id}/status`,token,{method:'PATCH',body:JSON.stringify({status})})).leaveRequest;}

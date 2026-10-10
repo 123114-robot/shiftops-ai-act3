@@ -1,0 +1,10 @@
+import { useEffect,useState,type FormEvent } from 'react';
+import { createEmployee,deactivateEmployee,listEmployees,type Employee } from '../api/employees';
+import { useAuth } from '../features/auth/auth-context';
+import { Link } from 'react-router-dom';
+
+export function EmployeesPage(){const{token}=useAuth();const[employees,setEmployees]=useState<Employee[]>([]);const[error,setError]=useState('');const[form,setForm]=useState({firstName:'',lastName:'',email:'',jobTitle:''});
+useEffect(()=>{if(token)void listEmployees(token).then(setEmployees).catch(e=>setError(e.message));},[token]);
+async function submit(e:FormEvent){e.preventDefault();if(!token)return;try{const created=await createEmployee(token,form);setEmployees(v=>[...v,created]);setForm({firstName:'',lastName:'',email:'',jobTitle:''});}catch(caught){setError(caught instanceof Error?caught.message:'Unable to create employee.');}}
+async function deactivate(id:string){if(!token)return;const updated=await deactivateEmployee(token,id);setEmployees(v=>v.map(item=>item.id===id?updated:item));}
+return <main className="dashboard-shell"><nav><strong>ShiftFlow</strong><a href="/dashboard">Dashboard</a></nav><section className="employee-layout"><div><p className="eyebrow">Team directory</p><h1>Employees</h1>{error&&<p role="alert">{error}</p>}<div className="employee-list">{employees.map(e=><article key={e.id}><Link to={`/employees/${e.id}`}><strong>{e.firstName} {e.lastName}</strong><span>{e.jobTitle} · {e.email}</span></Link><div><span className={`badge badge--${e.status.toLowerCase()}`}>{e.status}</span>{e.status==='ACTIVE'&&<button className="secondary" onClick={()=>void deactivate(e.id)}>Deactivate</button>}</div></article>)}</div></div><form className="employee-form" onSubmit={submit}><h2>Add employee</h2>{Object.keys(form).map(key=><label key={key}>{key.replace(/([A-Z])/g,' $1')}<input type={key==='email'?'email':'text'} value={form[key as keyof typeof form]} onChange={e=>setForm(v=>({...v,[key]:e.target.value}))} required/></label>)}<button type="submit">Create employee</button></form></section></main>;}

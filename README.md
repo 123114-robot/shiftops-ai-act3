@@ -1,0 +1,49 @@
+# ShiftOps AI
+
+ShiftOps AI is a planned human-approved workforce scheduling assistant built on the existing ShiftFlow application. This repository currently contains **Phase 0 foundation only**: the preserved ShiftFlow baseline, project documentation, environment contracts, a synthetic fixture, and a database-independent ShiftOps health endpoint. Candidate evaluation, proposals, AI inference, approval, schedule mutation, and audit behavior are not implemented yet.
+
+## Source and status
+
+- Product: ShiftOps AI — Autonomous Workforce Operations Assistant
+- Team: Synqvera Labs
+- Source snapshot: `123114-robot/ShiftFlow`, commit `6ea907b742c547bd8e8941e64afddf089daf733f`
+- Source branch at snapshot: `codex/phase-9-basic-dashboard`
+- Current delivery state: Phase 0 foundation; not submission-ready
+
+The source snapshot uses React, TypeScript, Vite, Express, Prisma, PostgreSQL, Vitest, Supertest, and GitHub Actions. Its existing authentication, RBAC, scheduling rules, leave, roster, and dashboard logic are preserved.
+
+## Setup
+
+Prerequisites: Node.js 20.19+ (CI uses Node 22), npm, and Docker Desktop for database-backed flows.
+
+```powershell
+Copy-Item .env.example .env
+Copy-Item backend/.env.example backend/.env
+npm ci
+npm run db:generate
+npm run test -w backend -- --run tests/health.test.ts
+npm run dev
+```
+
+Health endpoints:
+
+- Existing ShiftFlow: `GET http://localhost:3000/api/health`
+- Phase 0 ShiftOps: `GET http://localhost:3000/api/shiftops/health`
+
+For the complete preserved application, start PostgreSQL with `docker compose up -d postgres`, then run `npm run db:push` and `npm run db:seed`. Never use sample credentials outside local development.
+
+## Environment contract
+
+`AI_MODE=deterministic` is the only Phase 0 mode. `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, and `AI_TIMEOUT_SECONDS` reserve a server-side provider contract for a later authorized phase. No paid API or AMD/Evolus integration is active, and secrets must not be exposed to the frontend or committed.
+
+## Verification
+
+```powershell
+npm run lint
+npm run typecheck
+npm test
+npm run build
+git diff --check
+```
+
+See `docs/STATUS.md` for verified results and blockers, and `docs/COMPETITION_REQUIREMENTS.md` for the evidence-bounded competition audit.

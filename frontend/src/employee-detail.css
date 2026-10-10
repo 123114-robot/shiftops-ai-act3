@@ -1,0 +1,1 @@
+.employee-detail dl{display:grid;grid-template-columns:120px 1fr;gap:.65rem 1rem;margin:2rem 0}.employee-detail dt{color:#8fa7a8}.employee-detail dd{margin:0}.detail-actions{display:flex;gap:.75rem;margin-top:1.5rem}.secondary.danger{color:#ffaaa4;border:1px solid #ff786f55}

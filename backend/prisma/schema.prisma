@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  MANAGER
+  EMPLOYEE
+}
+
+enum EmployeeStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum ShiftStatus {
+  DRAFT
+  SCHEDULED
+  CANCELLED
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  passwordHash String
+  role UserRole
+  employee Employee?
+  createdShifts Shift[] @relation("ShiftCreator")
+  reviewedLeave LeaveRequest[] @relation("LeaveReviewer")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Employee {
+  id String @id @default(cuid())
+  userId String? @unique
+  user User? @relation(fields: [userId], references: [id])
+  firstName String
+  lastName String
+  email String @unique
+  phone String?
+  jobTitle String
+  status EmployeeStatus @default(ACTIVE)
+  availability Availability[]
+  leaveRequests LeaveRequest[]
+  shifts Shift[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Availability {
+  id String @id @default(cuid())
+  employeeId String
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  dayOfWeek DayOfWeek
+  startTime String?
+  endTime String?
+  isAvailable Boolean @default(true)
+  @@unique([employeeId, dayOfWeek])
+}
+model Shift {
+  id String @id @default(cuid())
+  employeeId String?
+  employee Employee? @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  date DateTime @db.Date
+  startTime String
+  endTime String
+  role String
+  notes String?
+  status ShiftStatus @default(DRAFT)
+  createdById String
+  createdBy User @relation("ShiftCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([date])
+  @@index([employeeId, date])
+}
+model LeaveRequest {
+  id String @id @default(cuid())
+  employeeId String
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  startDate DateTime @db.Date
+  endDate DateTime @db.Date
+  reason String
+  status LeaveStatus @default(PENDING)
+  reviewedById String?
+  reviewedBy User? @relation("LeaveReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([employeeId, startDate, endDate])
+}

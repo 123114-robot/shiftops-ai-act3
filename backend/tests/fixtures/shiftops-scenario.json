@@ -1,0 +1,17 @@
+{
+  "label": "synthetic-phase-0-fixture-only",
+  "timezone": "Australia/Sydney",
+  "shift": {
+    "id": "shift-001",
+    "date": "2026-10-19",
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "role": "team-member"
+  },
+  "unavailableEmployee": { "id": "employee-emma", "name": "Emma" },
+  "candidates": [
+    { "id": "employee-liam", "name": "Liam", "expected": "eligible" },
+    { "id": "employee-noah", "name": "Noah", "expected": "overlap" },
+    { "id": "employee-olivia", "name": "Olivia", "expected": "approved-leave" }
+  ]
+}
