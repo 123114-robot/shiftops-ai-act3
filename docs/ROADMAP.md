@@ -19,14 +19,19 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 - Completed: service/route tests and an opt-in PostgreSQL transaction integration test.
 - Excluded: AI explanation provider, UI, notifications, deployment, and partner integrations.
 
-## Phase 3 — Grounded explanation provider (current)
+## Phase 3 — Grounded explanation provider (complete)
 
 - Completed: deterministic explanations, OpenAI-compatible HTTP adapter, structured candidate-ID validation, timeout/error handling, output limits, and deterministic fallback.
 - Completed: proposal creation uses only already-validated candidate facts.
 - Not verified: real AMD Developer Cloud/vLLM endpoint, AMD hardware execution, model identity, latency, or Evolus.
 - Excluded: UI, deployment, and partner integration.
 
+## Phase 4 — Minimal Manager UI and end-to-end demo (current)
+
+- Completed: protected manager route, incident creation, incident-scoped candidate evaluation, eligible/blocked comparison, proposal creation, explicit approval, apply, and audit display.
+- Completed: backend service/route coverage plus a browser-component workflow test.
+- Excluded: automatic actions, richer shift picker, notifications, deployment, verified partner integration, and submission packaging.
+
 ## Later phases (not authorized)
 
-4. Minimal manager UI and end-to-end demo.
 5. Verified partner/competition integration and submission packaging.

@@ -19,6 +19,7 @@ const incident = { id: 'incident-1', shiftId: 'shift-1', reason: 'employee_unava
 const proposal = { id: 'proposal-1', incidentId: 'incident-1', status: 'PENDING_APPROVAL' as const };
 const service = {
   createIncident: async (actorId: string, shiftId: string, reason: string) => ({ ...incident, actorId, shiftId, reason }),
+  evaluateIncident: async (id: string) => ({ incidentId: id, shiftId: 'shift-1', candidates: [{ employeeId: 'employee-liam', eligible: true, score: 1000, reasons: ['AVAILABLE'], blockers: [] }] }),
   createProposal: async (actorId: string, incidentId: string, replacementEmployeeId: string) => ({ ...proposal, actorId, incidentId, replacementEmployeeId }),
   approve: async (id: string, actorId: string) => ({ ...proposal, id, actorId, status: 'APPROVED' as const }),
   reject: async (id: string, actorId: string) => ({ ...proposal, id, actorId, status: 'REJECTED' as const }),
@@ -36,6 +37,7 @@ describe('ShiftOps proposal routes', () => {
     const bearer = await token('manager@test.local');
     const headers = { Authorization: `Bearer ${bearer}` };
     expect((await request(app).post('/api/shiftops/incidents').set(headers).send({ shiftId: 'shift-1', reason: 'employee_unavailable' })).status).toBe(201);
+    expect((await request(app).post('/api/shiftops/incidents/incident-1/evaluate').set(headers)).body.evaluation.candidates).toHaveLength(1);
     expect((await request(app).post('/api/shiftops/proposals').set(headers).send({ incidentId: 'incident-1', replacementEmployeeId: 'employee-liam' })).status).toBe(201);
     expect((await request(app).post('/api/shiftops/proposals/proposal-1/approve').set(headers)).body.proposal.status).toBe('APPROVED');
     expect((await request(app).post('/api/shiftops/proposals/proposal-1/apply').set(headers)).body.proposal.status).toBe('APPLIED');

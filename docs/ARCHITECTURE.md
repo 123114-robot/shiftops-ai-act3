@@ -53,3 +53,7 @@ Phase 2 adds isolated tables and `/api/shiftops` endpoints, but changes no exist
 `ShiftOpsProposalService` rejects ineligible candidates before requesting an explanation. The explanation provider receives only the selected employee ID, shift ID, deterministic score, and validated reasons. Deterministic mode formats those facts locally.
 
 Remote mode uses the standard OpenAI-compatible `POST /chat/completions` contract through Node's built-in `fetch`. It requests structured JSON with `employeeId`, `reasonCodes`, and `explanation`, applies a timeout, checks the returned ID and requires the reason-code set to exactly match the validated input, limits output length, and falls back deterministically on any provider or validation failure. Provider output is stored as explanation text only; it cannot modify eligibility, approval state, or database mutations.
+
+## Phase 4 Manager UI
+
+The protected `/shiftops` route is a thin workflow client over the existing `/api/shiftops` boundary. It creates an incident, asks the backend to evaluate that open incident, renders eligible and blocked candidates with deterministic reasons, and then drives proposal creation, approval, apply, and audit retrieval. The evaluation endpoint exposes the Phase 1 evaluator only after resolving an open persisted incident; it does not accept client-supplied eligibility facts. No schema or dependency changes were introduced.

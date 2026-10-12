@@ -39,6 +39,23 @@ const repository = (overrides: Partial<ProposalRepository> = {}): ProposalReposi
 });
 
 describe('ShiftOpsProposalService', () => {
+  it('evaluates candidates for an open incident', async () => {
+    const service = new ShiftOpsProposalService(repository(), eligibility());
+    await expect(service.evaluateIncident('incident-1')).resolves.toMatchObject({
+      shiftId: 'shift-1',
+      candidates: [{ employeeId: 'employee-liam', eligible: true }],
+    });
+  });
+
+  it('does not evaluate a missing or closed incident', async () => {
+    await expect(new ShiftOpsProposalService(repository({ findIncident: async () => null }), eligibility())
+      .evaluateIncident('missing'))
+      .rejects.toMatchObject({ code: 'INCIDENT_NOT_FOUND' });
+    await expect(new ShiftOpsProposalService(repository({ findIncident: async () => ({ ...incident, status: 'RESOLVED' }) }), eligibility())
+      .evaluateIncident('incident-1'))
+      .rejects.toMatchObject({ code: 'INCIDENT_CLOSED' });
+  });
+
   it('creates an incident and an eligible pending proposal', async () => {
     const service = new ShiftOpsProposalService(repository(), eligibility(), {
       explain: async () => 'Grounded explanation for Liam.',

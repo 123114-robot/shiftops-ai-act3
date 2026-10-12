@@ -76,3 +76,33 @@ describe('weekly roster UI',()=>{
 describe('basic dashboard',()=>{
   it('shows the four manager metrics',async()=>{localStorage.setItem('shiftflow_token','valid');window.history.pushState({},'','/dashboard');vi.spyOn(globalThis,'fetch').mockImplementation(input=>String(input).endsWith('/auth/me')?response({user:manager}):response({dashboard:{employeesWorkingToday:3,unfilledShifts:2,employeesOnLeave:1,totalScheduledHours:40}}));render(<App/>);expect(await screen.findByText('Working today')).toBeInTheDocument();expect(screen.getByText('Unfilled shifts')).toBeInTheDocument();expect(screen.getByText('On approved leave')).toBeInTheDocument();expect(screen.getByText('Scheduled hours')).toBeInTheDocument();});
 });
+
+describe('ShiftOps manager workflow',()=>{
+  it('lets a manager evaluate, propose, approve, apply, and inspect audit history',async()=>{
+    localStorage.setItem('shiftflow_token','valid');window.history.pushState({},'','/shiftops');
+    vi.spyOn(globalThis,'fetch').mockImplementation((input,init)=>{
+      const url=String(input);
+      if(url.endsWith('/auth/me'))return response({user:manager});
+      if(url.endsWith('/incidents')&&init?.method==='POST')return response({incident:{id:'i1',shiftId:'s1',reason:'Employee unavailable',status:'OPEN'}},201);
+      if(url.endsWith('/incidents/i1/evaluate'))return response({evaluation:{shiftId:'s1',candidates:[{employeeId:'e2',eligible:true,score:960,reasons:['AVAILABLE','ROLE_MATCH'],blockers:[]},{employeeId:'e3',eligible:false,score:0,reasons:[],blockers:['SHIFT_OVERLAP']}]}});
+      if(url.endsWith('/proposals')&&init?.method==='POST')return response({proposal:{id:'p1',incidentId:'i1',replacementEmployeeId:'e2',explanation:'Eligible and available.',status:'PENDING_APPROVAL'}},201);
+      if(url.endsWith('/proposals/p1/approve'))return response({proposal:{id:'p1',incidentId:'i1',replacementEmployeeId:'e2',explanation:'Eligible and available.',status:'APPROVED'}});
+      if(url.endsWith('/proposals/p1/apply'))return response({proposal:{id:'p1',incidentId:'i1',replacementEmployeeId:'e2',explanation:'Eligible and available.',status:'APPLIED'}});
+      if(url.endsWith('/audit'))return response({auditEvents:[{id:'a1',action:'PROPOSAL_APPLIED',entityId:'p1',newStatus:'APPLIED',timestamp:'2026-10-13T00:00:00.000Z'}]});
+      return response({error:{message:'Unexpected request'}},500);
+    });
+    render(<App/>);
+    expect(await screen.findByRole('heading',{name:'ShiftOps copilot'})).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('Shift ID'),{target:{value:'s1'}});
+    fireEvent.change(screen.getByLabelText('Incident reason'),{target:{value:'Employee unavailable'}});
+    fireEvent.click(screen.getByRole('button',{name:'Create incident and evaluate'}));
+    expect(await screen.findByText('e2')).toBeInTheDocument();
+    expect(screen.getByText('SHIFT_OVERLAP')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button',{name:'Propose e2'}));
+    expect(await screen.findByText('Eligible and available.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button',{name:'Approve proposal'}));
+    expect(await screen.findByText('APPROVED')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button',{name:'Apply approved proposal'}));
+    expect(await screen.findByText('PROPOSAL_APPLIED')).toBeInTheDocument();
+  });
+});

@@ -106,6 +106,13 @@ export class ShiftOpsProposalService {
     return this.proposals.createIncident({ shiftId, reason, createdById });
   }
 
+  async evaluateIncident(incidentId: string) {
+    const incident = await this.proposals.findIncident(incidentId);
+    if (!incident) throw new ProposalError('INCIDENT_NOT_FOUND', 'Incident not found.');
+    if (incident.status !== 'OPEN') throw new ProposalError('INCIDENT_CLOSED', 'Incident is not open.');
+    return this.eligibility.evaluate(incident.shiftId);
+  }
+
   async createProposal(actorId: string, incidentId: string, replacementEmployeeId: string) {
     const incident = await this.proposals.findIncident(incidentId);
     if (!incident) throw new ProposalError('INCIDENT_NOT_FOUND', 'Incident not found.');

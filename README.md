@@ -1,6 +1,6 @@
 # ShiftOps AI
 
-ShiftOps AI is a human-approved workforce scheduling assistant built on the existing ShiftFlow application. Phase 3 adds grounded proposal explanations with deterministic fallback and an OpenAI-compatible remote inference path suitable for a verified AMD-hosted endpoint. UI is not implemented yet.
+ShiftOps AI is a human-approved workforce scheduling assistant built on the existing ShiftFlow application. Phase 4 adds a minimal Manager UI for the incident-to-audit demo while preserving backend-owned eligibility, approval, and schedule mutation.
 
 ## Source and status
 
@@ -8,7 +8,7 @@ ShiftOps AI is a human-approved workforce scheduling assistant built on the exis
 - Team: Synqvera Labs
 - Source snapshot: `123114-robot/ShiftFlow`, commit `6ea907b742c547bd8e8941e64afddf089daf733f`
 - Source branch at snapshot: `codex/phase-9-basic-dashboard`
-- Current delivery state: Phase 3 grounded explanation provider; AMD inference not yet verified and project not submission-ready
+- Current delivery state: Phase 4 minimal Manager UI; AMD inference not yet verified and project not submission-ready
 
 The source snapshot uses React, TypeScript, Vite, Express, Prisma, PostgreSQL, Vitest, Supertest, and GitHub Actions. Its existing authentication, RBAC, scheduling rules, leave, roster, and dashboard logic are preserved.
 
@@ -35,6 +35,7 @@ Phase 1 eligibility is intentionally an internal service. It checks active statu
 Phase 2 Manager-only endpoints:
 
 - `POST /api/shiftops/incidents`
+- `POST /api/shiftops/incidents/:id/evaluate`
 - `POST /api/shiftops/proposals`
 - `POST /api/shiftops/proposals/:id/approve`
 - `POST /api/shiftops/proposals/:id/reject`
@@ -43,6 +44,8 @@ Phase 2 Manager-only endpoints:
 - `GET /api/shiftops/audit`
 
 Run `npm run db:push` after pulling Phase 2 schema changes. Applying a proposal updates the shift, resolves the incident, advances the proposal version, and writes the audit event in one Prisma transaction.
+
+After signing in as a Manager, open `/shiftops` (or use the dashboard link), enter an existing shift ID and reason, compare eligible and blocked candidates, create a proposal, approve it, apply it, and inspect the returned audit history. The UI never bypasses the explicit approval step.
 
 For the complete preserved application, start PostgreSQL with `docker compose up -d postgres`, then run `npm run db:push` and `npm run db:seed`. Never use sample credentials outside local development.
 
