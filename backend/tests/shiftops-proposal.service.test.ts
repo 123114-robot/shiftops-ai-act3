@@ -40,11 +40,17 @@ const repository = (overrides: Partial<ProposalRepository> = {}): ProposalReposi
 
 describe('ShiftOpsProposalService', () => {
   it('creates an incident and an eligible pending proposal', async () => {
-    const service = new ShiftOpsProposalService(repository(), eligibility());
+    const service = new ShiftOpsProposalService(repository(), eligibility(), {
+      explain: async () => 'Grounded explanation for Liam.',
+    });
     await expect(service.createIncident('manager-1', 'shift-1', 'employee_unavailable'))
       .resolves.toMatchObject({ status: 'OPEN', shiftId: 'shift-1' });
     await expect(service.createProposal('manager-1', 'incident-1', 'employee-liam'))
-      .resolves.toMatchObject({ status: 'PENDING_APPROVAL', replacementEmployeeId: 'employee-liam' });
+      .resolves.toMatchObject({
+        status: 'PENDING_APPROVAL',
+        replacementEmployeeId: 'employee-liam',
+        explanation: 'Grounded explanation for Liam.',
+      });
   });
 
   it('rejects missing shifts, missing incidents, and ineligible candidates', async () => {

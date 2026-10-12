@@ -46,3 +46,11 @@
 - Concurrency: proposal status/version guards prevent repeated transitions, while the captured shift `updatedAt` rejects stale proposals.
 - Rationale: the LLM is not authoritative and cannot approve or mutate schedules. Every mutation is attributable to a Manager.
 - Migration note: the repository has no historical Prisma migration baseline, so Phase 2 retains its established `prisma db push` development/CI strategy. A deployable migration baseline is required before production release.
+
+## ADR-007 — Grounded OpenAI-compatible explanation adapter
+
+- Status: Accepted, 2026-10-12
+- Decision: Keep deterministic explanations as the default; optionally use a server-side OpenAI-compatible endpoint and validate structured output against the selected employee ID and the exact validated reason-code set.
+- Failure behavior: timeout, HTTP error, malformed JSON, mismatched ID, empty text, or text over 800 characters returns the deterministic explanation.
+- Rationale: enables a real AMD-hosted vLLM path without giving the model authority over eligibility or mutation and without adding an SDK dependency.
+- Evidence boundary: adapter and mocked protocol tests do not prove AMD execution. Real endpoint, model, hardware, and latency remain unverified.

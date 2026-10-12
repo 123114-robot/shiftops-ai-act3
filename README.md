@@ -1,6 +1,6 @@
 # ShiftOps AI
 
-ShiftOps AI is a human-approved workforce scheduling assistant built on the existing ShiftFlow application. Phase 2 adds a Manager-only incident and proposal API with explicit approval/rejection, apply-time eligibility revalidation, optimistic concurrency, one-time schedule application, and audit persistence. AI inference and UI are not implemented yet.
+ShiftOps AI is a human-approved workforce scheduling assistant built on the existing ShiftFlow application. Phase 3 adds grounded proposal explanations with deterministic fallback and an OpenAI-compatible remote inference path suitable for a verified AMD-hosted endpoint. UI is not implemented yet.
 
 ## Source and status
 
@@ -8,7 +8,7 @@ ShiftOps AI is a human-approved workforce scheduling assistant built on the exis
 - Team: Synqvera Labs
 - Source snapshot: `123114-robot/ShiftFlow`, commit `6ea907b742c547bd8e8941e64afddf089daf733f`
 - Source branch at snapshot: `codex/phase-9-basic-dashboard`
-- Current delivery state: Phase 2 proposal workflow; not submission-ready
+- Current delivery state: Phase 3 grounded explanation provider; AMD inference not yet verified and project not submission-ready
 
 The source snapshot uses React, TypeScript, Vite, Express, Prisma, PostgreSQL, Vitest, Supertest, and GitHub Actions. Its existing authentication, RBAC, scheduling rules, leave, roster, and dashboard logic are preserved.
 
@@ -48,7 +48,7 @@ For the complete preserved application, start PostgreSQL with `docker compose up
 
 ## Environment contract
 
-`AI_MODE=deterministic` is the only Phase 0 mode. `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, and `AI_TIMEOUT_SECONDS` reserve a server-side provider contract for a later authorized phase. No paid API or AMD/Evolus integration is active, and secrets must not be exposed to the frontend or committed.
+`AI_MODE=deterministic` uses only validated facts and requires no provider. `AI_MODE=remote` calls `${AI_BASE_URL}/chat/completions` with `AI_API_KEY`, `AI_MODEL`, and `AI_TIMEOUT_SECONDS`. Configuration stays server-side. Remote output must return JSON containing the same `employeeId` and exact validated `reasonCodes`; invalid, mismatched, empty, oversized, failed, or timed-out responses fall back deterministically. No paid API was called, and the AMD path remains **NOT TESTED** until a real approved endpoint is exercised.
 
 ## Verification
 
