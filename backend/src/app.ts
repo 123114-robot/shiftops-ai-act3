@@ -17,6 +17,7 @@ import { createShiftRouter } from './routes/shifts.js';
 import { createLeaveRouter } from './routes/leave.js';
 import { createRosterRouter } from './routes/roster.js';
 import { createDashboardRouter } from './routes/dashboard.js';
+import { createShiftOpsProposalRouter } from './routes/shiftops-proposals.js';
 import { AuthenticationService } from './services/AuthenticationService.js';
 import { AvailabilityService } from './services/AvailabilityService.js';
 import { EmployeeService } from './services/EmployeeService.js';
@@ -25,6 +26,10 @@ import { SchedulingService } from './services/SchedulingService.js';
 import { LeaveService } from './services/LeaveService.js';
 import { RosterService } from './services/RosterService.js';
 import { DashboardService } from './services/DashboardService.js';
+import { ShiftOpsEligibilityService } from './shiftops/ShiftOpsEligibilityService.js';
+import { PrismaShiftOpsRepository } from './shiftops/PrismaShiftOpsRepository.js';
+import { ShiftOpsProposalService } from './shiftops/ShiftOpsProposalService.js';
+import { PrismaProposalRepository } from './shiftops/PrismaProposalRepository.js';
 
 const jwtSecret = process.env.JWT_SECRET ?? 'development-only-secret-change-me-now';
 if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
@@ -38,12 +43,19 @@ const shiftService = new ShiftService(new PrismaShiftRepository(), schedulingSer
 const leaveService = new LeaveService(new PrismaLeaveRepository());
 const rosterService = new RosterService(new PrismaRosterRepository());
 const dashboardService = new DashboardService(new PrismaDashboardRepository());
+const maxWeeklyMinutes = Number(process.env.SHIFTOPS_MAX_WEEKLY_MINUTES ?? '2400');
+const eligibilityService = new ShiftOpsEligibilityService(new PrismaShiftOpsRepository(), {
+  maxWeeklyMinutes,
+  requireRoleMatch: process.env.SHIFTOPS_REQUIRE_ROLE_MATCH !== 'false',
+});
+const proposalService = new ShiftOpsProposalService(new PrismaProposalRepository(), eligibilityService);
 
 export const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL ?? 'http://localhost:5173' }));
 app.use(express.json());
 app.use('/api/health', healthRouter);
 app.use('/api/shiftops/health', shiftOpsHealthRouter);
+app.use('/api/shiftops', createShiftOpsProposalRouter(authenticationService, proposalService));
 app.use('/api/auth', createAuthRouter(authenticationService));
 app.use('/api/employees', createEmployeeRouter(authenticationService, employeeService));
 app.use('/api/employees', createManagerAvailabilityRouter(authenticationService, availabilityService));

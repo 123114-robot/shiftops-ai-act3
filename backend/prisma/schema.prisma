@@ -29,6 +29,20 @@ enum LeaveStatus {
   REJECTED
 }
 
+enum ShiftIncidentStatus {
+  OPEN
+  RESOLVED
+  CANCELLED
+}
+
+enum ShiftProposalStatus {
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  APPLIED
+  CANCELLED
+}
+
 enum DayOfWeek {
   MONDAY
   TUESDAY
@@ -46,6 +60,9 @@ model User {
   employee Employee?
   createdShifts Shift[] @relation("ShiftCreator")
   reviewedLeave LeaveRequest[] @relation("LeaveReviewer")
+  createdShiftIncidents ShiftIncident[] @relation("IncidentCreator")
+  approvedShiftProposals ShiftProposal[] @relation("ProposalApprover")
+  shiftOpsAuditEvents ShiftOpsAuditEvent[] @relation("AuditActor")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -62,8 +79,55 @@ model Employee {
   availability Availability[]
   leaveRequests LeaveRequest[]
   shifts Shift[]
+  replacementProposals ShiftProposal[] @relation("ProposalReplacement")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ShiftIncident {
+  id String @id @default(cuid())
+  shiftId String
+  shift Shift @relation(fields: [shiftId], references: [id], onDelete: Restrict)
+  reason String
+  status ShiftIncidentStatus @default(OPEN)
+  createdById String
+  createdBy User @relation("IncidentCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  proposals ShiftProposal[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([shiftId, status])
+}
+
+model ShiftProposal {
+  id String @id @default(cuid())
+  incidentId String
+  incident ShiftIncident @relation(fields: [incidentId], references: [id], onDelete: Restrict)
+  replacementEmployeeId String
+  replacementEmployee Employee @relation("ProposalReplacement", fields: [replacementEmployeeId], references: [id], onDelete: Restrict)
+  explanation String
+  status ShiftProposalStatus @default(PENDING_APPROVAL)
+  approvedById String?
+  approvedBy User? @relation("ProposalApprover", fields: [approvedById], references: [id], onDelete: Restrict)
+  approvedAt DateTime?
+  appliedAt DateTime?
+  version Int @default(1)
+  shiftUpdatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([incidentId, status])
+}
+
+model ShiftOpsAuditEvent {
+  id String @id @default(cuid())
+  actorId String
+  actor User @relation("AuditActor", fields: [actorId], references: [id], onDelete: Restrict)
+  action String
+  entityId String
+  previousStatus String?
+  newStatus String
+  timestamp DateTime @default(now())
+  details Json
+  @@index([entityId, timestamp])
 }
 model Availability {
   id String @id @default(cuid())
@@ -89,6 +153,7 @@ model Shift {
   createdBy User @relation("ShiftCreator", fields: [createdById], references: [id], onDelete: Restrict)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  incidents ShiftIncident[]
   @@index([date])
   @@index([employeeId, date])
 }
