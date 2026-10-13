@@ -5,10 +5,15 @@ import type {
 } from './ShiftOpsEligibilityService.js';
 import { prisma } from '../repositories/prisma.js';
 import { businessDayOfWeek, parseStrictTime, startOfBusinessWeek } from './BusinessTime.js';
+import type { TransactionClient } from './SchedulingTransaction.js';
+
+type ShiftOpsDb = Pick<TransactionClient, 'shift' | 'employee'>;
 
 export class PrismaShiftOpsRepository implements ShiftOpsRepository {
+  constructor(private readonly db: ShiftOpsDb = prisma) {}
+
   findShift(shiftId: string) {
-    return prisma.shift.findUnique({
+    return this.db.shift.findUnique({
       where: { id: shiftId },
       select: {
         id: true,
@@ -26,7 +31,7 @@ export class PrismaShiftOpsRepository implements ShiftOpsRepository {
     const weekEnd = new Date(weekStart);
     weekEnd.setUTCDate(weekEnd.getUTCDate() + 6);
 
-    const employees = await prisma.employee.findMany({
+    const employees = await this.db.employee.findMany({
       select: {
         id: true,
         status: true,

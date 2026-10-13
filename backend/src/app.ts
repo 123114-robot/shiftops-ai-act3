@@ -70,7 +70,10 @@ const explanationProvider = aiMode === 'remote'
   )
   : deterministicExplanation;
 const proposalService = new ShiftOpsProposalService(
-  new PrismaProposalRepository(),
+  new PrismaProposalRepository({
+    maxWeeklyMinutes,
+    requireRoleMatch: process.env.SHIFTOPS_REQUIRE_ROLE_MATCH !== 'false',
+  }),
   eligibilityService,
   explanationProvider,
 );
