@@ -1,6 +1,6 @@
 # ShiftOps AI
 
-ShiftOps AI is a planned human-approved workforce scheduling assistant built on the existing ShiftFlow application. Phase 1 adds a backend-only, read-only eligibility and ranking module over the preserved ShiftFlow model. Proposals, approval, AI inference, schedule mutation, audit persistence, APIs, and UI are not implemented yet.
+ShiftOps AI is a human-approved workforce scheduling assistant built on the existing ShiftFlow application. Phase 2 adds a Manager-only incident and proposal API with explicit approval/rejection, apply-time eligibility revalidation, optimistic concurrency, one-time schedule application, and audit persistence. AI inference and UI are not implemented yet.
 
 ## Source and status
 
@@ -8,7 +8,7 @@ ShiftOps AI is a planned human-approved workforce scheduling assistant built on 
 - Team: Synqvera Labs
 - Source snapshot: `123114-robot/ShiftFlow`, commit `6ea907b742c547bd8e8941e64afddf089daf733f`
 - Source branch at snapshot: `codex/phase-9-basic-dashboard`
-- Current delivery state: Phase 1 eligibility module; not wired to an API and not submission-ready
+- Current delivery state: Phase 2 proposal workflow; not submission-ready
 
 The source snapshot uses React, TypeScript, Vite, Express, Prisma, PostgreSQL, Vitest, Supertest, and GitHub Actions. Its existing authentication, RBAC, scheduling rules, leave, roster, and dashboard logic are preserved.
 
@@ -31,6 +31,18 @@ Health endpoints:
 - Phase 0 ShiftOps: `GET http://localhost:3000/api/shiftops/health`
 
 Phase 1 eligibility is intentionally an internal service. It checks active status, full-shift availability, approved leave, overlaps, optional exact role match, and a configurable weekly-minute limit. Eligible candidates are ranked by remaining weekly minutes after the proposed shift, then by `employeeId` for deterministic ties.
+
+Phase 2 Manager-only endpoints:
+
+- `POST /api/shiftops/incidents`
+- `POST /api/shiftops/proposals`
+- `POST /api/shiftops/proposals/:id/approve`
+- `POST /api/shiftops/proposals/:id/reject`
+- `POST /api/shiftops/proposals/:id/apply`
+- `GET /api/shiftops/proposals/:id`
+- `GET /api/shiftops/audit`
+
+Run `npm run db:push` after pulling Phase 2 schema changes. Applying a proposal updates the shift, resolves the incident, advances the proposal version, and writes the audit event in one Prisma transaction.
 
 For the complete preserved application, start PostgreSQL with `docker compose up -d postgres`, then run `npm run db:push` and `npm run db:seed`. Never use sample credentials outside local development.
 

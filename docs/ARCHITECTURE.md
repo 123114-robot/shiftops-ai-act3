@@ -28,8 +28,22 @@ The health route remains database-independent. Phase 1 adds no API surface: call
 
 The service excludes inactive employees, incomplete availability, approved leave, overlapping assignments, configured role mismatches, and candidates who would exceed the configured weekly-minute limit. Eligible score equals `maxWeeklyMinutes - existingWeeklyMinutes - proposedShiftMinutes`; higher scores rank first and `employeeId` breaks ties. The score is an operational workload-balancing value, not an employment-performance assessment.
 
-Later phases may add a proposal state machine, approval/application service, audit persistence, API, and server-side explanation provider. Existing employee and shift tables remain authoritative. A modular monolith remains preferred.
+Existing employee and shift tables remain authoritative. A modular monolith remains preferred; later phases may add only the explanation provider and UI needed around these backend boundaries.
+
+## Phase 2 proposal workflow
+
+All `/api/shiftops` workflow routes require authenticated `MANAGER` role. `ShiftOpsProposalService` permits these transitions:
+
+```text
+OPEN incident -> PENDING_APPROVAL proposal
+PENDING_APPROVAL -> APPROVED -> APPLIED
+PENDING_APPROVAL -> REJECTED
+```
+
+Proposal creation accepts only a currently eligible candidate. Apply re-runs deterministic eligibility. The repository uses proposal `version` plus expected status for review/apply concurrency, and compares the shift's captured `updatedAt` value before mutation. The shift assignment, proposal transition, incident resolution, and audit event occur in one Prisma transaction. Rejected, stale, already-applied, or concurrently modified proposals fail without a schedule mutation.
+
+New persistence is limited to `ShiftIncident`, `ShiftProposal`, and `ShiftOpsAuditEvent`. This repository currently uses `prisma db push`; a production migration baseline remains future release work.
 
 ## Compatibility and migration
 
-Phase 1 adds no schema migration, changes no existing endpoint, writes no data, and introduces no runtime dependency. It preserves current ShiftFlow call sites and business behavior.
+Phase 2 adds isolated tables and `/api/shiftops` endpoints, but changes no existing endpoint and introduces no runtime dependency. Existing ShiftFlow call sites remain compatible.

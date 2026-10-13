@@ -38,3 +38,11 @@
 - Rationale: Keeps business-rule evaluation testable and prevents Phase 1 from acquiring mutation or authorization responsibilities.
 - Ranking: eligible candidates receive their remaining configured weekly minutes after the proposed shift; ties use `employeeId` ascending.
 - Consequence: role matching is exact and opt-in, and the caller must provide the configurable weekly-minute ceiling. Legal compliance is not implied.
+
+## ADR-006 — Transactional human approval workflow
+
+- Status: Accepted, 2026-10-12
+- Decision: Persist incidents, proposals, and audit events; require authenticated Manager routes; revalidate eligibility at apply time; apply the schedule mutation and audit transactionally.
+- Concurrency: proposal status/version guards prevent repeated transitions, while the captured shift `updatedAt` rejects stale proposals.
+- Rationale: the LLM is not authoritative and cannot approve or mutate schedules. Every mutation is attributable to a Manager.
+- Migration note: the repository has no historical Prisma migration baseline, so Phase 2 retains its established `prisma db push` development/CI strategy. A deployable migration baseline is required before production release.
