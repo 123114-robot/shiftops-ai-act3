@@ -26,7 +26,7 @@ The application skeleton and Phases 0–7 are substantially implemented and test
 | U-02 | Resolve source ownership and licensing | BLOCKED | Repository owner/legal decision | User / owner |
 | U-03 | Prove real AMD-hosted inference | BLOCKED | AMD access, endpoint, model, credentials | Infrastructure engineer |
 | U-04 | Decide whether to enter the Evolus partner track | NOT SELECTED | Product decision and event workspace | User / architect |
-| U-05 | Close ordinary shift-write concurrency gap | PARTIAL | Architecture and PostgreSQL integration work | Backend engineer |
+| U-05 | Verify ordinary shift-write concurrency hardening | IMPLEMENTED / UNVERIFIED | PostgreSQL integration run | Backend engineer |
 | U-06 | Remediate remaining dependency advisories | PARTIAL | Compatibility-tested upgrades | Maintainer |
 | U-07 | Create a production database migration baseline | UNVERIFIED / REQUIRED FOR RELEASE | Deployment database strategy | Backend/DevOps engineer |
 | U-08 | Deploy a publicly reachable prototype | BLOCKED | Platform, secrets, database, budget decision | DevOps engineer |
@@ -148,7 +148,7 @@ If not selected, record `Evolus: not used` truthfully and do not add placeholder
 
 ## U-05 — Ordinary shift create/update concurrency gap
 
-**Current status:** PARTIAL; highest-priority unresolved code risk.
+**Current status:** IMPLEMENTED locally; PostgreSQL cross-route verification remains BLOCKED.
 
 ### What is already protected
 
@@ -157,19 +157,20 @@ If not selected, record `Evolus: not used` truthfully and do not add placeholder
 - Shift assignment, proposal status, incident status, and audit write are atomic.
 - Availability replacement and approved-leave mutation use the same employee lock.
 - PostgreSQL CI includes a concurrency test where two overlapping proposal applies race and only one commits.
+- Ordinary shift create/update/reassignment/unassignment/cancel now validate and persist inside the shared Serializable transaction boundary.
+- Reassignments acquire unique old/new employee locks in deterministic lexical order.
+- Exhausted Prisma serialization retries map to `CONCURRENT_SCHEDULE_UPDATE`.
 
 ### Exact remaining gap
 
-Ordinary shift create/update performs validation before repository persistence and does not validate inside the same employee-scoped lock. A concurrent writer could therefore pass validation against stale state and persist a conflict while another protected scheduling operation is in progress.
+The implementation and non-database regressions pass, and an ordinary-create-versus-proposal-apply race test is present. The local Docker Desktop Linux engine is unavailable, so that test has not executed against PostgreSQL. Update/reassignment versus proposal apply and availability/leave cross-route races also remain without direct PostgreSQL evidence.
 
-### Design questions for another model
+### Remaining verification questions
 
-1. What is the single transaction boundary for every write capable of changing employee schedule eligibility?
-2. Which lock keys are required when one operation affects multiple employees, and what deterministic lock order prevents deadlocks?
-3. Should validation and persistence move into one scheduling command service, or should repositories expose a transaction-scoped callback?
-4. How should Prisma `P2034`, lock timeouts, and serialization failures map to stable API errors?
-5. Which routes and background jobs can mutate `Shift`, `Availability`, or approved leave and must share the protocol?
-6. How will bulk operations, unassigned shifts, deletions, and reassignment behave?
+1. Does the new cross-route race pass repeatedly against the CI PostgreSQL service?
+2. Do update/reassignment, availability, and approved-leave races exhibit the same one-writer outcome?
+3. Does retry exhaustion leave shifts, proposals, incidents, and audit records unchanged?
+4. Are advisory-lock wait time and retry telemetry sufficient for deployment diagnostics?
 
 ### Required tests
 
@@ -183,9 +184,9 @@ Ordinary shift create/update performs validation before repository persistence a
 
 ### Acceptance criteria
 
-- Every authoritative scheduling write uses the documented shared lock/transaction protocol.
-- Eligibility is validated against transaction-consistent state immediately before persistence.
-- Conflicting concurrent operations cannot both commit.
+- Code review confirms every current authoritative scheduling write uses the documented shared lock/transaction protocol.
+- Eligibility is validated through the transaction client immediately before persistence.
+- Conflicting concurrent operations cannot both commit in repeatable PostgreSQL tests.
 - Non-conflicting operations retain acceptable behavior and performance.
 - ADR and architecture documentation describe the invariant and residual limitations.
 

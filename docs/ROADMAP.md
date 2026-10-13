@@ -52,6 +52,13 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 - BLOCKED: no `AI_API_KEY`, exact Token Factory model ID, successful live request, or human-reviewed runtime evidence is available.
 - Pull request: `https://github.com/123114-robot/shiftops-ai-act3/pull/7`; do not merge without review.
 
+## Phase 8 — Scheduling-write serialization (implemented locally; database verification blocked)
+
+- Implemented: ordinary shift create/update/reassignment/unassignment/cancel use transaction-scoped validation, deterministic employee lock ordering, Serializable retry, and stable concurrency errors.
+- Verified locally: focused unit/route/transaction tests, full non-database regression, lint, typecheck, and production build.
+- BLOCKED: the added ordinary-create-versus-proposal-apply PostgreSQL race test could not run because the Docker Desktop Linux engine was unavailable.
+- Delivery state: local branch only; not pushed, merged, or deployed.
+
 ## Later work (not authorized)
 
 - Execute and record a real AMD Token Factory inference run once credentials and an exact model ID are available.

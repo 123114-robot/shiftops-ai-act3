@@ -4,12 +4,13 @@ Last updated: 2026-10-14 (Australia/Sydney)
 
 ## Current state
 
-- Phase: 7 AMD Token Factory integration
+- Phase: 8 scheduling-write serialization
 - Source: local ShiftFlow checkout, branch `codex/phase-9-basic-dashboard`, commit `6ea907b`
 - Original checkout: clean and unchanged during this work
-- New repository: isolated, public GitHub repository; working branch `feature/phase-7-amd-token-factory`
+- New repository: isolated, public GitHub repository; working branch `feature/phase-8-scheduling-write-serialization`
 - Implemented: Phases 0–5 plus CI coverage, strict business-time handling, transaction-scoped proposal revalidation, constrained explanations, typed error mapping, reject UI, provenance and audit hardening
 - Implemented in Phase 7: official Token Factory endpoint contract, explicit provider/source labels, response-model provenance validation, sanitized inference trace, and reproducible synthetic evidence command
+- Implemented locally in Phase 8: ordinary shift create/update/reassignment/unassignment/cancel now validate and persist inside the shared employee-lock and Serializable transaction boundary
 - Not verified: successful live AMD request (credentials/model unavailable), AMD account/hardware evidence, Evolus, deployment, video, deck, or portal submission
 
 ## Validation
@@ -41,6 +42,10 @@ Last updated: 2026-10-14 (Australia/Sydney)
 - Phase 7 lint, typecheck, production build, Prisma client generation, and `git diff --check`: PASS.
 - Phase 7 submission readiness: BLOCKED as expected because runtime AMD evidence, public-repository environment evidence, and submission assets are absent.
 - Phase 7 live AMD verification: BLOCKED; the safe verification command refused to run without `AI_API_KEY` and `AI_MODEL` and printed no secret values. See `docs/AMD_TOKEN_FACTORY.md`.
+- Phase 8 focused tests: PASS, 19 unit/route/transaction tests including deterministic multi-employee lock ordering.
+- Phase 8 full local regression: PASS, 81 backend and 17 frontend tests; 4 PostgreSQL tests skipped because the Docker Desktop Linux engine was unavailable.
+- Phase 8 lint, typecheck, production build, and `git diff --check`: PASS.
+- Phase 8 PostgreSQL cross-route race: TEST ADDED BUT NOT RUN locally; do not mark scheduling-write serialization VERIFIED until it passes against PostgreSQL.
 
 Database-backed tests require PostgreSQL and are not evidence of AMD/Evolus access.
 
@@ -56,8 +61,8 @@ See `docs/OPEN_ISSUES_HANDOFF.md` for the issue-by-issue handoff, evidence requi
 - Track selection remains open; Evolus is optional for the main event but mandatory for its partner prize.
 - GitHub detects no license for this repository or its ShiftFlow source; ownership and MIT-compatibility must be resolved before submission.
 - Six full-tree dependency advisories remain; resolving them requires compatibility testing of Vitest/Prisma version changes. No forced fix was used.
-- Proposal apply now locks by employee and revalidates inside a Serializable transaction. Availability replacement and approved leave share that lock. Ordinary shift create/update still validates before repository persistence, so full cross-route scheduling serialization remains PARTIAL.
+- Proposal apply, availability replacement, approved leave, and ordinary shift writes now share the employee-lock/Serializable protocol in code. Full cross-route scheduling serialization remains IMPLEMENTED BUT UNVERIFIED until the new PostgreSQL race test passes.
 
 ## Phase gate
 
-Stop after the Phase 7 PR. Do not merge, deploy, submit, or begin another phase without explicit approval.
+Stop after the local Phase 8 checkpoint. Do not push, merge, deploy, submit, or begin another phase without explicit approval.

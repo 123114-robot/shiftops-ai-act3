@@ -7,7 +7,7 @@ export interface SchedulingRepository {
   hasApprovedLeave(employeeId:string,date:Date):Promise<boolean>;
   hasOverlap(employeeId:string,date:Date,startTime:string,endTime:string,excludeShiftId?:string):Promise<boolean>;
 }
-export type SchedulingErrorCode='INVALID_SHIFT_TIME'|'SHIFT_OVERLAP'|'AVAILABILITY_CONFLICT'|'EMPLOYEE_ON_LEAVE'|'EMPLOYEE_INACTIVE'|'EMPLOYEE_NOT_FOUND';
+export type SchedulingErrorCode='INVALID_SHIFT_TIME'|'SHIFT_OVERLAP'|'AVAILABILITY_CONFLICT'|'EMPLOYEE_ON_LEAVE'|'EMPLOYEE_INACTIVE'|'EMPLOYEE_NOT_FOUND'|'CONCURRENT_SCHEDULE_UPDATE';
 export class SchedulingError extends Error {constructor(public readonly code:SchedulingErrorCode,message:string){super(message)}}
 export interface ShiftValidator {validate(candidate:SchedulingCandidate,excludeShiftId?:string):Promise<void>}
 export class SchedulingService implements ShiftValidator {
