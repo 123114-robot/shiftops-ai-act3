@@ -30,7 +30,8 @@ Last updated: 2026-10-13 (Australia/Sydney)
 - Phase 5 full regression: PASS, 70 backend and 16 frontend tests; lint, typecheck, build, Prisma schema validation, and diff check passed. Two PostgreSQL integration tests remained skipped because no database engine was available.
 - Phase 6 local unit/route tests: PASS, 78 backend tests and 17 frontend tests.
 - Phase 6 readiness tests: PASS, 4 tests.
-- Phase 6 PostgreSQL integration/concurrency: BLOCKED locally; 3 tests skipped because the Docker Desktop Linux engine pipe was unavailable. GitHub CI is configured with PostgreSQL and `DATABASE_TESTS=true`; no CI conclusion is claimed before the remote run completes.
+- Phase 6 local PostgreSQL integration/concurrency: BLOCKED; 3 tests skipped because the Docker Desktop Linux engine pipe was unavailable.
+- GitHub CI run `38382593504`: PASS. PostgreSQL initialized successfully with `DATABASE_TESTS=true`; backend 81/81, frontend 17/17, and readiness 4/4 tests passed with zero skipped. Lint, typecheck and build passed. Run: `https://github.com/123114-robot/shiftops-ai-act3/actions/runs/38382593504`.
 - Phase 6 lint, typecheck, production build, Prisma schema validation, and `git diff --check`: PASS.
 - npm audit after safe non-forced fixes: full tree 6 findings (1 moderate, 3 high, 2 critical); production-only 3 high findings. See `docs/NPM_AUDIT.md`.
 
