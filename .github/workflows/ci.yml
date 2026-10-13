@@ -4,9 +4,12 @@ on:
   pull_request:
     branches:
       - main
+      - feature/phase-5-submission-readiness
   push:
     branches:
       - main
+      - 'feature/**'
+      - 'fix/**'
 
 permissions:
   contents: read
@@ -70,6 +73,9 @@ jobs:
 
       - name: Run full automated tests
         run: npm test
+
+      - name: Run submission-readiness unit tests
+        run: npm run test:readiness
 
       - name: Build production bundles
         run: npm run build
