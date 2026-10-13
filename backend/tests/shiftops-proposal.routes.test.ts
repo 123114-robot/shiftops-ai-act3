@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import express from 'express';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { createShiftOpsProposalRouter } from '../src/routes/shiftops-proposals.js';
+import { createShiftOpsProposalRouter, proposalErrorStatus } from '../src/routes/shiftops-proposals.js';
 import { AuthenticationService, type AuthUserRepository } from '../src/services/AuthenticationService.js';
 
 const hash = await bcrypt.hash('ShiftFlow123!', 4);
@@ -33,6 +33,14 @@ app.use('/api/shiftops', createShiftOpsProposalRouter(auth, service));
 const token = async (email: string) => (await auth.login(email, 'ShiftFlow123!')).token;
 
 describe('ShiftOps proposal routes', () => {
+  it('maps every proposal domain error explicitly', () => {
+    expect(proposalErrorStatus('SHIFT_NOT_FOUND')).toBe(404);
+    expect(proposalErrorStatus('INCIDENT_NOT_FOUND')).toBe(404);
+    expect(proposalErrorStatus('PROPOSAL_NOT_FOUND')).toBe(404);
+    for (const code of ['INCIDENT_CLOSED', 'CANDIDATE_INELIGIBLE', 'INVALID_PROPOSAL_STATE', 'CONCURRENT_UPDATE', 'STALE_PROPOSAL'] as const) {
+      expect(proposalErrorStatus(code)).toBe(409);
+    }
+  });
   it('supports the manager incident-to-apply workflow', async () => {
     const bearer = await token('manager@test.local');
     const headers = { Authorization: `Bearer ${bearer}` };

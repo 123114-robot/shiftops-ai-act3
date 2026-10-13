@@ -33,7 +33,7 @@ export function ShiftOpsPage() {
     finally { setBusy(false); }
   }
 
-  async function transition(action: 'approve' | 'apply') {
+  async function transition(action: 'approve' | 'reject' | 'apply') {
     if (!token || !proposal) return;
     setBusy(true); setError('');
     try {
@@ -59,7 +59,7 @@ export function ShiftOpsPage() {
       {candidate.eligible && !proposal && <button disabled={busy} onClick={() => void propose(candidate.employeeId)}>Propose {candidate.employeeId}</button>}
     </article>)}</div></section>}
     {proposal && <section className="proposal-card"><h2>Proposal</h2><p><strong>{proposal.replacementEmployeeId}</strong> <span className="badge">{proposal.status}</span></p><p>{proposal.explanation}</p>
-      {proposal.status === 'PENDING_APPROVAL' && <button disabled={busy} onClick={() => void transition('approve')}>Approve proposal</button>}
+      {proposal.status === 'PENDING_APPROVAL' && <div className="detail-actions"><button disabled={busy} onClick={() => void transition('approve')}>Approve proposal</button><button className="secondary danger" disabled={busy} onClick={() => void transition('reject')}>Reject proposal</button></div>}
       {proposal.status === 'APPROVED' && <button disabled={busy} onClick={() => void transition('apply')}>Apply approved proposal</button>}
     </section>}
     {audit.length > 0 && <section><h2>Audit history</h2><div className="audit-list">{audit.map(event => <article key={event.id}><strong>{event.action}</strong><span>{event.entityId} · {event.newStatus}</span></article>)}</div></section>}

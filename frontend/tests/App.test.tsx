@@ -105,4 +105,9 @@ describe('ShiftOps manager workflow',()=>{
     fireEvent.click(screen.getByRole('button',{name:'Apply approved proposal'}));
     expect(await screen.findByText('PROPOSAL_APPLIED')).toBeInTheDocument();
   });
+  it('lets a manager reject a pending proposal and prevents apply actions',async()=>{
+    localStorage.setItem('shiftflow_token','valid');window.history.pushState({},'','/shiftops');
+    vi.spyOn(globalThis,'fetch').mockImplementation((input,init)=>{const url=String(input);if(url.endsWith('/auth/me'))return response({user:manager});if(url.endsWith('/incidents')&&init?.method==='POST')return response({incident:{id:'i1'}},201);if(url.endsWith('/incidents/i1/evaluate'))return response({evaluation:{shiftId:'s1',candidates:[{employeeId:'e2',eligible:true,score:10,reasons:['AVAILABLE'],blockers:[]}]}});if(url.endsWith('/proposals')&&init?.method==='POST')return response({proposal:{id:'p1',incidentId:'i1',replacementEmployeeId:'e2',explanation:'Grounded.',status:'PENDING_APPROVAL'}},201);if(url.endsWith('/proposals/p1/reject'))return response({proposal:{id:'p1',incidentId:'i1',replacementEmployeeId:'e2',explanation:'Grounded.',status:'REJECTED'}});return response({error:{message:'Unexpected request'}},500);});
+    render(<App/>);await screen.findByRole('heading',{name:'ShiftOps copilot'});fireEvent.change(screen.getByLabelText('Shift ID'),{target:{value:'s1'}});fireEvent.change(screen.getByLabelText('Incident reason'),{target:{value:'Unavailable'}});fireEvent.click(screen.getByRole('button',{name:'Create incident and evaluate'}));fireEvent.click(await screen.findByRole('button',{name:'Propose e2'}));fireEvent.click(await screen.findByRole('button',{name:'Reject proposal'}));expect(await screen.findByText('REJECTED')).toBeInTheDocument();expect(screen.queryByRole('button',{name:'Apply approved proposal'})).not.toBeInTheDocument();
+  });
 });
