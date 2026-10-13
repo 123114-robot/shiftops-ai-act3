@@ -2,6 +2,7 @@ import { pathToFileURL } from 'node:url';
 import { existsSync } from 'node:fs';
 
 const present = value => typeof value === 'string' && value.trim().length > 0;
+const AMD_TOKEN_FACTORY_BASE_URL = 'https://developer.amd.com.cn/radeon/api/v1';
 const enabled = value => String(value ?? '').toLowerCase() === 'true';
 const evidenceFile = value => present(value) && existsSync(value);
 const publicUrl = value => {
@@ -13,7 +14,12 @@ const state = value => ['MISSING', 'PRESENT', 'VALIDATED', 'VERIFIED'].includes(
 export function assessReadiness({ env = {}, repositoryVisibility = 'UNKNOWN', evidence = {} }) {
   const remoteFields = ['AI_BASE_URL', 'AI_API_KEY', 'AI_MODEL'];
   const missingRemote = remoteFields.filter(key => !present(env[key]));
-  const remoteConfigured = env.AI_MODE === 'remote' && missingRemote.length === 0;
+  const amdProviderConfigured = env.AI_PROVIDER === 'amd-token-factory';
+  const amdBaseUrlConfigured = String(env.AI_BASE_URL ?? '').replace(/\/$/, '') === AMD_TOKEN_FACTORY_BASE_URL;
+  const remoteConfigured = env.AI_MODE === 'remote'
+    && amdProviderConfigured
+    && amdBaseUrlConfigured
+    && missingRemote.length === 0;
   const repositoryPublic = repositoryVisibility.toUpperCase() === 'PUBLIC';
   const requiredAssets = ['workingPrototypeUrl', 'demoVideo', 'pitchDeck'];
   const missingAssets = requiredAssets.filter(key => state(evidence[key]) === 'MISSING');
@@ -34,7 +40,12 @@ export function assessReadiness({ env = {}, repositoryVisibility = 'UNKNOWN', ev
     ? { status: 'VERIFIED', missing: [] }
     : remoteConfigured
       ? { status: amdState === 'MISSING' ? 'MISSING' : 'REVIEW_REQUIRED', missing: ['verified AMD runtime inference evidence'] }
-      : { status: 'BLOCKED', missing: ['AI_MODE=remote', ...missingRemote] };
+      : { status: 'BLOCKED', missing: [
+        ...(env.AI_MODE === 'remote' ? [] : ['AI_MODE=remote']),
+        ...(amdProviderConfigured ? [] : ['AI_PROVIDER=amd-token-factory']),
+        ...(amdBaseUrlConfigured ? [] : [`AI_BASE_URL=${AMD_TOKEN_FACTORY_BASE_URL}`]),
+        ...missingRemote,
+      ] };
   const evolus = !evolusSelected
     ? { status: 'NOT_SELECTED', missing: [] }
     : unverifiedEvolus.length === 0
@@ -53,6 +64,7 @@ export function assessReadiness({ env = {}, repositoryVisibility = 'UNKNOWN', ev
     overall, local, repository, amd, evolus, assets,
     inputSummary: {
       AI_MODE: env.AI_MODE ?? 'deterministic',
+      AI_PROVIDER: env.AI_PROVIDER ?? 'openai-compatible',
       AI_BASE_URL: present(env.AI_BASE_URL),
       AI_API_KEY: present(env.AI_API_KEY),
       AI_MODEL: present(env.AI_MODEL),

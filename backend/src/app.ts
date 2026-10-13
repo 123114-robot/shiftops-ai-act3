@@ -34,6 +34,7 @@ import {
   DeterministicExplanationProvider,
   GroundedExplanationProvider,
   OpenAICompatibleExplanationProvider,
+  AMD_TOKEN_FACTORY_BASE_URL,
 } from './shiftops/ShiftOpsExplanationProvider.js';
 
 const jwtSecret = process.env.JWT_SECRET ?? 'development-only-secret-change-me-now';
@@ -55,18 +56,28 @@ const eligibilityService = new ShiftOpsEligibilityService(new PrismaShiftOpsRepo
 });
 const deterministicExplanation = new DeterministicExplanationProvider();
 const aiMode = process.env.AI_MODE ?? 'deterministic';
+const configuredAiProvider = process.env.AI_PROVIDER ?? 'openai-compatible';
 if (!['deterministic', 'remote'].includes(aiMode)) {
   throw new Error('AI_MODE must be deterministic or remote.');
 }
+if (configuredAiProvider !== 'openai-compatible' && configuredAiProvider !== 'amd-token-factory') {
+  throw new Error('AI_PROVIDER must be openai-compatible or amd-token-factory.');
+}
+const aiProvider = configuredAiProvider;
 const explanationProvider = aiMode === 'remote'
   ? new GroundedExplanationProvider(
     new OpenAICompatibleExplanationProvider({
-      baseUrl: process.env.AI_BASE_URL ?? '',
+      baseUrl: aiProvider === 'amd-token-factory'
+        ? process.env.AI_BASE_URL || AMD_TOKEN_FACTORY_BASE_URL
+        : process.env.AI_BASE_URL ?? '',
       apiKey: process.env.AI_API_KEY ?? '',
       model: process.env.AI_MODEL ?? '',
       timeoutMs: Number(process.env.AI_TIMEOUT_SECONDS ?? '30') * 1_000,
+      provider: aiProvider,
+      supportsResponseFormat: aiProvider !== 'amd-token-factory',
     }),
-    deterministicExplanation,
+    new DeterministicExplanationProvider('deterministic-fallback'),
+    trace => console.info('shiftops_ai_inference', JSON.stringify(trace)),
   )
   : deterministicExplanation;
 const proposalService = new ShiftOpsProposalService(
