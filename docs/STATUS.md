@@ -4,11 +4,11 @@ Last updated: 2026-10-13 (Australia/Sydney)
 
 ## Current state
 
-- Phase: 5 submission readiness and evidence gate
+- Phase: 6 audit hardening
 - Source: local ShiftFlow checkout, branch `codex/phase-9-basic-dashboard`, commit `6ea907b`
 - Original checkout: clean and unchanged during this work
-- New repository: isolated, public GitHub repository; working branch `feature/phase-5-submission-readiness`
-- Implemented: Phases 0–4 plus submission-readiness checker and evidence-bounded submission package
+- New repository: isolated, public GitHub repository; working branch `fix/phase-6-audit-hardening`
+- Implemented: Phases 0–5 plus CI coverage, strict business-time handling, transaction-scoped proposal revalidation, constrained explanations, typed error mapping, reject UI, provenance and audit hardening
 - Not implemented: verified AMD/Evolus runtime integration, deployment, video, deck, or portal submission
 
 ## Validation
@@ -28,6 +28,11 @@ Last updated: 2026-10-13 (Australia/Sydney)
 - Phase 5 readiness checker tests: PASS, 3 tests; secret values are neither returned nor printed.
 - `npm run submission:check` with verified public-repository flag: BLOCKED as expected because AMD configuration/runtime evidence and submission assets are absent.
 - Phase 5 full regression: PASS, 70 backend and 16 frontend tests; lint, typecheck, build, Prisma schema validation, and diff check passed. Two PostgreSQL integration tests remained skipped because no database engine was available.
+- Phase 6 local unit/route tests: PASS, 78 backend tests and 17 frontend tests.
+- Phase 6 readiness tests: PASS, 4 tests.
+- Phase 6 PostgreSQL integration/concurrency: BLOCKED locally; 3 tests skipped because the Docker Desktop Linux engine pipe was unavailable. GitHub CI is configured with PostgreSQL and `DATABASE_TESTS=true`; no CI conclusion is claimed before the remote run completes.
+- Phase 6 lint, typecheck, production build, Prisma schema validation, and `git diff --check`: PASS.
+- npm audit after safe non-forced fixes: full tree 6 findings (1 moderate, 3 high, 2 critical); production-only 3 high findings. See `docs/NPM_AUDIT.md`.
 
 Database-backed tests require PostgreSQL and are not evidence of AMD/Evolus access.
 
@@ -40,9 +45,9 @@ Database-backed tests require PostgreSQL and are not evidence of AMD/Evolus acce
 - Evolus event code/workspace, API key, and connected AMD vLLM endpoint are unavailable locally.
 - Track selection remains open; Evolus is optional for the main event but mandatory for its partner prize.
 - GitHub detects no license for this repository or its ShiftFlow source; ownership and MIT-compatibility must be resolved before submission.
-- `npm ci` reported 9 dependency audit findings (1 moderate, 4 high, 4 critical); no automatic or breaking dependency upgrade was attempted in Phase 0. These require a targeted audit before release.
-- Target-shift and proposal concurrency are guarded by `updatedAt`, status, and version. Candidate availability/leave/overlap are revalidated immediately before the transaction, but a narrow cross-transaction eligibility race remains until database-level locking or equivalent scheduling serialization is introduced.
+- Six full-tree dependency advisories remain; resolving them requires compatibility testing of Vitest/Prisma version changes. No forced fix was used.
+- Proposal apply now locks by employee and revalidates inside a Serializable transaction. Availability replacement and approved leave share that lock. Ordinary shift create/update still validates before repository persistence, so full cross-route scheduling serialization remains PARTIAL.
 
 ## Phase gate
 
-Stop after Phase 5. Real AMD/Evolus execution, deployment, or submission requires the missing external access/evidence and a new explicit approval. Phase 5 is not pushed automatically.
+Stop after Phase 6. Do not merge its PR, deploy, submit, or begin Phase 7 without explicit approval.
