@@ -43,9 +43,10 @@ Last updated: 2026-10-14 (Australia/Sydney)
 - Phase 7 submission readiness: BLOCKED as expected because runtime AMD evidence, public-repository environment evidence, and submission assets are absent.
 - Phase 7 live AMD verification: BLOCKED; the safe verification command refused to run without `AI_API_KEY` and `AI_MODEL` and printed no secret values. See `docs/AMD_TOKEN_FACTORY.md`.
 - Phase 8 focused tests: PASS, 19 unit/route/transaction tests including deterministic multi-employee lock ordering.
-- Phase 8 full local regression: PASS, 81 backend and 17 frontend tests; 4 PostgreSQL tests skipped because the Docker Desktop Linux engine was unavailable.
+- Phase 8 initial non-database regression: PASS, 81 backend and 17 frontend tests; database tests were initially skipped before Docker Desktop was started.
 - Phase 8 lint, typecheck, production build, and `git diff --check`: PASS.
-- Phase 8 PostgreSQL cross-route race: TEST ADDED BUT NOT RUN locally; do not mark scheduling-write serialization VERIFIED until it passes against PostgreSQL.
+- Phase 8 PostgreSQL verification: PASS, schema synchronized with the local disposable database and all 86 backend tests passed with zero skips.
+- Phase 8 race stability: PASS, the four-test proposal/database suite—including ordinary create and reassignment versus proposal apply—passed five consecutive runs before the final full backend run.
 
 Database-backed tests require PostgreSQL and are not evidence of AMD/Evolus access.
 
@@ -61,7 +62,7 @@ See `docs/OPEN_ISSUES_HANDOFF.md` for the issue-by-issue handoff, evidence requi
 - Track selection remains open; Evolus is optional for the main event but mandatory for its partner prize.
 - GitHub detects no license for this repository or its ShiftFlow source; ownership and MIT-compatibility must be resolved before submission.
 - Six full-tree dependency advisories remain; resolving them requires compatibility testing of Vitest/Prisma version changes. No forced fix was used.
-- Proposal apply, availability replacement, approved leave, and ordinary shift writes now share the employee-lock/Serializable protocol in code. Full cross-route scheduling serialization remains IMPLEMENTED BUT UNVERIFIED until the new PostgreSQL race test passes.
+- Proposal apply, availability replacement, approved leave, and ordinary shift writes share the employee-lock/Serializable protocol. PostgreSQL verifies ordinary create/reassignment versus proposal apply; availability/leave cross-route race combinations and production-load behavior remain unverified.
 
 ## Phase gate
 

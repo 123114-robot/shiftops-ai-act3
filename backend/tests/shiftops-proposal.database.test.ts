@@ -145,4 +145,35 @@ databaseDescribe('ShiftOps proposal database transaction', () => {
       status: { not: 'CANCELLED' },
     } })).toBe(1);
   });
+
+  it('serializes ordinary shift reassignment against proposal apply for the same employee', async () => {
+    const suffix = `${Date.now()}-${Math.random()}`;
+    const manager = await prisma.user.create({ data: { email: `manager-reassign-${suffix}@test.local`, passwordHash: 'not-used', role: 'MANAGER' } });
+    const employeeUser = await prisma.user.create({ data: { email: `employee-reassign-${suffix}@test.local`, passwordHash: 'not-used', role: 'EMPLOYEE' } });
+    createdUserIds.push(manager.id, employeeUser.id);
+    const employee = await prisma.employee.create({ data: { userId: employeeUser.id, firstName: 'Reassign', lastName: 'Synthetic', email: `reassign-${suffix}@test.local`, jobTitle: 'team-member' } });
+    await prisma.availability.create({ data: { employeeId: employee.id, dayOfWeek: 'MONDAY', startTime: '09:00', endTime: '17:00', isAvailable: true } });
+    const shifts = await Promise.all(['proposal-target', 'ordinary-reassignment'].map(notes => prisma.shift.create({ data: {
+      date: new Date('2026-10-19T00:00:00.000Z'), startTime: '09:00', endTime: '17:00', role: 'team-member', notes, createdById: manager.id,
+    } })));
+    const policy = { maxWeeklyMinutes: 2_400, requireRoleMatch: true };
+    const proposalService = new ShiftOpsProposalService(new PrismaProposalRepository(policy), new ShiftOpsEligibilityService(new PrismaShiftOpsRepository(), policy));
+    const incident = await proposalService.createIncident(manager.id, shifts[0]!.id, 'employee_unavailable');
+    const proposal = await proposalService.createProposal(manager.id, incident.id, employee.id);
+    const approved = await proposalService.approve(proposal.id, manager.id);
+    const shiftService = new ShiftService(new PrismaShiftRepository());
+
+    const results = await Promise.allSettled([
+      proposalService.apply(approved.id, manager.id),
+      shiftService.update(shifts[1]!.id, { employeeId: employee.id }),
+    ]);
+
+    expect(results.filter(result => result.status === 'fulfilled')).toHaveLength(1);
+    expect(results.filter(result => result.status === 'rejected')).toHaveLength(1);
+    expect(await prisma.shift.count({ where: {
+      id: { in: shifts.map(shift => shift.id) },
+      employeeId: employee.id,
+      status: { not: 'CANCELLED' },
+    } })).toBe(1);
+  });
 });

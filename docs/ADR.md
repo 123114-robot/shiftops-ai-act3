@@ -93,8 +93,8 @@
 
 ## ADR-013 — Atomic ordinary shift writes
 
-- Status: Accepted in implementation; PostgreSQL cross-route test pending, 2026-10-14
+- Status: Accepted and PostgreSQL-verified for create/reassignment versus proposal apply, 2026-10-14
 - Decision: `PrismaShiftRepository` owns validation and persistence for create, update/reassignment, unassignment, and cancellation inside one Serializable transaction using the shared employee advisory-lock protocol.
 - Lock ordering: operations affecting old and new employees deduplicate IDs and acquire locks in lexical order to avoid cross-reassignment deadlocks.
 - Compatibility: REST routes, request/response schemas, scheduling rules, authentication, and MANAGER RBAC remain unchanged. Exhausted Prisma `P2034` retries map to stable `CONCURRENT_SCHEDULE_UPDATE` conflict responses.
-- Evidence boundary: unit, route, lint, typecheck, and build validation pass. The new ordinary-create-versus-proposal-apply PostgreSQL race test has not run locally because the Docker Desktop Linux engine is unavailable; do not claim the cross-route invariant VERIFIED until a database-backed run passes.
+- Evidence boundary: unit, route, lint, typecheck, and build validation pass. PostgreSQL race tests for ordinary create and reassignment versus proposal apply each passed repeatedly; availability/leave cross-route race combinations and production load behavior remain outside this evidence.

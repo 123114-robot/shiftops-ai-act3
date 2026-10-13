@@ -26,7 +26,7 @@ The application skeleton and Phases 0–7 are substantially implemented and test
 | U-02 | Resolve source ownership and licensing | BLOCKED | Repository owner/legal decision | User / owner |
 | U-03 | Prove real AMD-hosted inference | BLOCKED | AMD access, endpoint, model, credentials | Infrastructure engineer |
 | U-04 | Decide whether to enter the Evolus partner track | NOT SELECTED | Product decision and event workspace | User / architect |
-| U-05 | Verify ordinary shift-write concurrency hardening | IMPLEMENTED / UNVERIFIED | PostgreSQL integration run | Backend engineer |
+| U-05 | Extend scheduling concurrency evidence matrix | VERIFIED CORE / PARTIAL MATRIX | Additional PostgreSQL race cases | Backend engineer |
 | U-06 | Remediate remaining dependency advisories | PARTIAL | Compatibility-tested upgrades | Maintainer |
 | U-07 | Create a production database migration baseline | UNVERIFIED / REQUIRED FOR RELEASE | Deployment database strategy | Backend/DevOps engineer |
 | U-08 | Deploy a publicly reachable prototype | BLOCKED | Platform, secrets, database, budget decision | DevOps engineer |
@@ -148,7 +148,7 @@ If not selected, record `Evolus: not used` truthfully and do not add placeholder
 
 ## U-05 — Ordinary shift create/update concurrency gap
 
-**Current status:** IMPLEMENTED locally; PostgreSQL cross-route verification remains BLOCKED.
+**Current status:** VERIFIED for ordinary create/reassignment versus proposal apply; broader race matrix remains PARTIAL.
 
 ### What is already protected
 
@@ -163,7 +163,7 @@ If not selected, record `Evolus: not used` truthfully and do not add placeholder
 
 ### Exact remaining gap
 
-The implementation and non-database regressions pass, and an ordinary-create-versus-proposal-apply race test is present. The local Docker Desktop Linux engine is unavailable, so that test has not executed against PostgreSQL. Update/reassignment versus proposal apply and availability/leave cross-route races also remain without direct PostgreSQL evidence.
+The implementation and regressions pass. PostgreSQL race tests for ordinary create and reassignment versus proposal apply each passed five consecutive matrix runs and the final 86/86 backend run. Availability replacement and approved-leave mutation use the shared lock in code, but their races against ordinary shift mutation do not yet have direct cross-route PostgreSQL tests. Production contention and lock-wait behavior also remain unmeasured.
 
 ### Remaining verification questions
 

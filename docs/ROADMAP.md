@@ -52,11 +52,11 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 - BLOCKED: no `AI_API_KEY`, exact Token Factory model ID, successful live request, or human-reviewed runtime evidence is available.
 - Pull request: `https://github.com/123114-robot/shiftops-ai-act3/pull/7`; do not merge without review.
 
-## Phase 8 — Scheduling-write serialization (implemented locally; database verification blocked)
+## Phase 8 — Scheduling-write serialization (complete locally)
 
 - Implemented: ordinary shift create/update/reassignment/unassignment/cancel use transaction-scoped validation, deterministic employee lock ordering, Serializable retry, and stable concurrency errors.
-- Verified locally: focused unit/route/transaction tests, full non-database regression, lint, typecheck, and production build.
-- BLOCKED: the added ordinary-create-versus-proposal-apply PostgreSQL race test could not run because the Docker Desktop Linux engine was unavailable.
+- Verified locally: focused unit/route/transaction tests, lint, typecheck, production build, and 86/86 backend tests with PostgreSQL enabled.
+- PostgreSQL evidence: ordinary create and reassignment versus proposal apply race matrices each passed five consecutive runs; every run allowed only one overlapping assignment to commit.
 - Delivery state: local branch only; not pushed, merged, or deployed.
 
 ## Later work (not authorized)
