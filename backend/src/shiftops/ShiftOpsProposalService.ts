@@ -1,3 +1,8 @@
+import {
+  DeterministicExplanationProvider,
+  type ExplanationProvider,
+} from './ShiftOpsExplanationProvider.js';
+
 export type IncidentStatus = 'OPEN' | 'RESOLVED' | 'CANCELLED';
 export type ProposalStatus = 'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED' | 'APPLIED' | 'CANCELLED';
 
@@ -60,7 +65,6 @@ export interface ProposalRepository {
   }): Promise<ShiftOpsProposal>;
   listAudit(): Promise<AuditRecord[]>;
 }
-
 export interface EligibilityEvaluator {
   evaluate(shiftId: string): Promise<{
     shiftId: string;
@@ -73,7 +77,6 @@ export interface EligibilityEvaluator {
     }>;
   }>;
 }
-
 export type ProposalErrorCode =
   | 'SHIFT_NOT_FOUND'
   | 'INCIDENT_NOT_FOUND'
@@ -89,11 +92,11 @@ export class ProposalError extends Error {
     super(message);
   }
 }
-
 export class ShiftOpsProposalService {
   constructor(
     private readonly proposals: ProposalRepository,
     private readonly eligibility: EligibilityEvaluator,
+    private readonly explanations: ExplanationProvider = new DeterministicExplanationProvider(),
   ) {}
 
   async createIncident(createdById: string, shiftId: string, reason: string) {
@@ -114,10 +117,17 @@ export class ShiftOpsProposalService {
       throw new ProposalError('CANDIDATE_INELIGIBLE', 'Replacement employee is not eligible for this shift.');
     }
 
+    const explanation = await this.explanations.explain({
+      shiftId: incident.shiftId,
+      employeeId: candidate.employeeId,
+      score: candidate.score,
+      reasons: candidate.reasons,
+    });
+
     return this.proposals.createProposal({
       incidentId,
       replacementEmployeeId,
-      explanation: `Eligible under deterministic scheduling rules: ${candidate.reasons.join(', ')}.`,
+      explanation,
       actorId,
     });
   }
@@ -179,3 +189,4 @@ export class ShiftOpsProposalService {
     return proposal;
   }
 }
+// End of the proposal workflow service.

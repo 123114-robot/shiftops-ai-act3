@@ -13,14 +13,20 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 - Completed: deterministic blockers, reasons, configurable role/weekly-minute policy, and stable ranking.
 - Excluded: persistence mutation, AI explanation, proposal workflow, API, and UI.
 
-## Phase 2 — Proposal workflow (current)
+## Phase 2 — Proposal workflow (complete)
 
 - Completed: incident and proposal persistence, stable state transitions, Manager-only API, approval/rejection, apply-time eligibility revalidation, optimistic concurrency, stale detection, atomic schedule mutation, and audit records.
 - Completed: service/route tests and an opt-in PostgreSQL transaction integration test.
 - Excluded: AI explanation provider, UI, notifications, deployment, and partner integrations.
 
+## Phase 3 — Grounded explanation provider (current)
+
+- Completed: deterministic explanations, OpenAI-compatible HTTP adapter, structured candidate-ID validation, timeout/error handling, output limits, and deterministic fallback.
+- Completed: proposal creation uses only already-validated candidate facts.
+- Not verified: real AMD Developer Cloud/vLLM endpoint, AMD hardware execution, model identity, latency, or Evolus.
+- Excluded: UI, deployment, and partner integration.
+
 ## Later phases (not authorized)
 
-3. Grounded explanation provider with deterministic fallback and real AMD path.
 4. Minimal manager UI and end-to-end demo.
 5. Verified partner/competition integration and submission packaging.

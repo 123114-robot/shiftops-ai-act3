@@ -28,7 +28,7 @@ The health route remains database-independent. Phase 1 adds no API surface: call
 
 The service excludes inactive employees, incomplete availability, approved leave, overlapping assignments, configured role mismatches, and candidates who would exceed the configured weekly-minute limit. Eligible score equals `maxWeeklyMinutes - existingWeeklyMinutes - proposedShiftMinutes`; higher scores rank first and `employeeId` breaks ties. The score is an operational workload-balancing value, not an employment-performance assessment.
 
-Existing employee and shift tables remain authoritative. A modular monolith remains preferred; later phases may add only the explanation provider and UI needed around these backend boundaries.
+Existing employee and shift tables remain authoritative. A modular monolith remains preferred; later phases may add only the UI needed around these backend boundaries.
 
 ## Phase 2 proposal workflow
 
@@ -47,3 +47,9 @@ New persistence is limited to `ShiftIncident`, `ShiftProposal`, and `ShiftOpsAud
 ## Compatibility and migration
 
 Phase 2 adds isolated tables and `/api/shiftops` endpoints, but changes no existing endpoint and introduces no runtime dependency. Existing ShiftFlow call sites remain compatible.
+
+## Phase 3 grounded explanations
+
+`ShiftOpsProposalService` rejects ineligible candidates before requesting an explanation. The explanation provider receives only the selected employee ID, shift ID, deterministic score, and validated reasons. Deterministic mode formats those facts locally.
+
+Remote mode uses the standard OpenAI-compatible `POST /chat/completions` contract through Node's built-in `fetch`. It requests structured JSON with `employeeId`, `reasonCodes`, and `explanation`, applies a timeout, checks the returned ID and requires the reason-code set to exactly match the validated input, limits output length, and falls back deterministically on any provider or validation failure. Provider output is stored as explanation text only; it cannot modify eligibility, approval state, or database mutations.

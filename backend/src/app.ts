@@ -30,6 +30,11 @@ import { ShiftOpsEligibilityService } from './shiftops/ShiftOpsEligibilityServic
 import { PrismaShiftOpsRepository } from './shiftops/PrismaShiftOpsRepository.js';
 import { ShiftOpsProposalService } from './shiftops/ShiftOpsProposalService.js';
 import { PrismaProposalRepository } from './shiftops/PrismaProposalRepository.js';
+import {
+  DeterministicExplanationProvider,
+  GroundedExplanationProvider,
+  OpenAICompatibleExplanationProvider,
+} from './shiftops/ShiftOpsExplanationProvider.js';
 
 const jwtSecret = process.env.JWT_SECRET ?? 'development-only-secret-change-me-now';
 if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
@@ -48,7 +53,27 @@ const eligibilityService = new ShiftOpsEligibilityService(new PrismaShiftOpsRepo
   maxWeeklyMinutes,
   requireRoleMatch: process.env.SHIFTOPS_REQUIRE_ROLE_MATCH !== 'false',
 });
-const proposalService = new ShiftOpsProposalService(new PrismaProposalRepository(), eligibilityService);
+const deterministicExplanation = new DeterministicExplanationProvider();
+const aiMode = process.env.AI_MODE ?? 'deterministic';
+if (!['deterministic', 'remote'].includes(aiMode)) {
+  throw new Error('AI_MODE must be deterministic or remote.');
+}
+const explanationProvider = aiMode === 'remote'
+  ? new GroundedExplanationProvider(
+    new OpenAICompatibleExplanationProvider({
+      baseUrl: process.env.AI_BASE_URL ?? '',
+      apiKey: process.env.AI_API_KEY ?? '',
+      model: process.env.AI_MODEL ?? '',
+      timeoutMs: Number(process.env.AI_TIMEOUT_SECONDS ?? '30') * 1_000,
+    }),
+    deterministicExplanation,
+  )
+  : deterministicExplanation;
+const proposalService = new ShiftOpsProposalService(
+  new PrismaProposalRepository(),
+  eligibilityService,
+  explanationProvider,
+);
 
 export const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL ?? 'http://localhost:5173' }));
