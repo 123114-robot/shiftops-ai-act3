@@ -64,3 +64,5 @@ git diff --check
 ```
 
 See `docs/STATUS.md` for verified results and blockers, and `docs/COMPETITION_REQUIREMENTS.md` for the evidence-bounded competition audit.
+
+Phase 5 submission preparation is in `docs/SUBMISSION_CHECKLIST.md`, `docs/SUBMISSION_DRAFT.md`, `docs/DEMO_SCRIPT.md`, and `docs/RUNTIME_EVIDENCE_TEMPLATE.md`. Run `npm run test:readiness` and `npm run submission:check` to inspect the evidence gate; the checker never prints credential values.

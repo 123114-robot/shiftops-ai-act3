@@ -26,12 +26,20 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 - Not verified: real AMD Developer Cloud/vLLM endpoint, AMD hardware execution, model identity, latency, or Evolus.
 - Excluded: UI, deployment, and partner integration.
 
-## Phase 4 — Minimal Manager UI and end-to-end demo (current)
+## Phase 4 — Minimal Manager UI and end-to-end demo (complete)
 
 - Completed: protected manager route, incident creation, incident-scoped candidate evaluation, eligible/blocked comparison, proposal creation, explicit approval, apply, and audit display.
 - Completed: backend service/route coverage plus a browser-component workflow test.
 - Excluded: automatic actions, richer shift picker, notifications, deployment, verified partner integration, and submission packaging.
 
-## Later phases (not authorized)
+## Phase 5 — Submission readiness and evidence gate (current)
 
-5. Verified partner/competition integration and submission packaging.
+- Completed: refreshed public-requirement audit, public-repository verification, submission draft, checklist, five-minute demo script, runtime evidence template, and secret-safe readiness checker.
+- BLOCKED: authenticated enrollment/deadline confirmation, license compatibility, deployed application, video, deck, real AMD inference evidence, and any optional Evolus eligibility.
+- No real AMD/Evolus API call was made and no compliance claim is implied.
+
+## Later work (not authorized)
+
+- Execute and record a real AMD-hosted inference run once approved infrastructure and credentials are available.
+- Select and implement the optional Evolus track only with an event workspace and explicit track decision.
+- Deploy and submit only after the evidence gate is complete.
