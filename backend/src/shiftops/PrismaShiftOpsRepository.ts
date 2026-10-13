@@ -4,21 +4,7 @@ import type {
   ShiftOpsShift,
 } from './ShiftOpsEligibilityService.js';
 import { prisma } from '../repositories/prisma.js';
-
-const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'] as const;
-
-const timeToMinutes = (time: string) => {
-  const [hours = 0, minutes = 0] = time.split(':').map(Number);
-  return hours * 60 + minutes;
-};
-
-const startOfUtcWeek = (date: Date) => {
-  const start = new Date(date);
-  const daysSinceMonday = (start.getUTCDay() + 6) % 7;
-  start.setUTCDate(start.getUTCDate() - daysSinceMonday);
-  start.setUTCHours(0, 0, 0, 0);
-  return start;
-};
+import { businessDayOfWeek, parseStrictTime, startOfBusinessWeek } from './BusinessTime.js';
 
 export class PrismaShiftOpsRepository implements ShiftOpsRepository {
   findShift(shiftId: string) {
@@ -36,7 +22,7 @@ export class PrismaShiftOpsRepository implements ShiftOpsRepository {
   }
 
   async listCandidateRecords(shift: ShiftOpsShift): Promise<ShiftOpsCandidateRecord[]> {
-    const weekStart = startOfUtcWeek(shift.date);
+    const weekStart = startOfBusinessWeek(shift.date);
     const weekEnd = new Date(weekStart);
     weekEnd.setUTCDate(weekEnd.getUTCDate() + 6);
 
@@ -46,7 +32,7 @@ export class PrismaShiftOpsRepository implements ShiftOpsRepository {
         status: true,
         jobTitle: true,
         availability: {
-          where: { dayOfWeek: days[shift.date.getUTCDay()] },
+          where: { dayOfWeek: businessDayOfWeek(shift.date) },
           select: { isAvailable: true, startTime: true, endTime: true },
         },
         leaveRequests: {
@@ -79,9 +65,14 @@ export class PrismaShiftOpsRepository implements ShiftOpsRepository {
         && assignedShift.startTime < shift.endTime
         && assignedShift.endTime > shift.startTime
       )),
-      weeklyScheduledMinutes: employee.shifts.reduce((total, assignedShift) => (
-        total + timeToMinutes(assignedShift.endTime) - timeToMinutes(assignedShift.startTime)
-      ), 0),
+      weeklyScheduledMinutes: employee.shifts.reduce((total, assignedShift) => {
+        const start = parseStrictTime(assignedShift.startTime);
+        const end = parseStrictTime(assignedShift.endTime);
+        if (start === null || end === null || start >= end) {
+          throw new Error(`Shift ${assignedShift.date.toISOString()} has invalid stored time.`);
+        }
+        return total + end - start;
+      }, 0),
     }));
   }
 }

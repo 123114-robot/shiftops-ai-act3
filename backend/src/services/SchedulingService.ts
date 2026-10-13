@@ -13,7 +13,8 @@ export interface ShiftValidator {validate(candidate:SchedulingCandidate,excludeS
 export class SchedulingService implements ShiftValidator {
   constructor(private readonly scheduling:SchedulingRepository){}
   async validate(candidate:SchedulingCandidate,excludeShiftId?:string){
-    if(candidate.startTime>=candidate.endTime)throw new SchedulingError('INVALID_SHIFT_TIME','Shift end time must be later than start time.');
+    const start=parseStrictTime(candidate.startTime);const end=parseStrictTime(candidate.endTime);
+    if(start===null||end===null||start>=end)throw new SchedulingError('INVALID_SHIFT_TIME','Shift times must use HH:mm and end later than start.');
     if(!candidate.employeeId)return;
     const status=await this.scheduling.getEmployeeStatus(candidate.employeeId);
     if(!status)throw new SchedulingError('EMPLOYEE_NOT_FOUND','Employee not found.');
@@ -24,3 +25,5 @@ export class SchedulingService implements ShiftValidator {
     if(await this.scheduling.hasOverlap(candidate.employeeId,candidate.date,candidate.startTime,candidate.endTime,excludeShiftId))throw new SchedulingError('SHIFT_OVERLAP','Employee already has an overlapping shift.');
   }
 }
+import { parseStrictTime } from '../shiftops/BusinessTime.js';
+
