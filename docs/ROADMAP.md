@@ -2,17 +2,16 @@
 
 Each phase requires user verification and explicit approval before the next begins.
 
-## Phase 0 — Foundation (current)
+## Phase 0 — Foundation (complete)
 
 Protected source snapshot, evidence-bounded requirements, architecture/docs, environment contract, health endpoint, synthetic fixture, smoke tests, and CI baseline.
 
-## Proposed Phase 1 — Data and eligibility contract
+## Phase 1 — Data and eligibility contract (current)
 
-- Inspect current Prisma models and scheduling service call sites in detail.
-- Define read-only ShiftOps data adapter interfaces over existing employee, availability, leave, and shift data.
-- Write tests for the synthetic Liam/Noah/Olivia scenario.
-- Implement deterministic eligibility only: active status, full availability, overlap, approved leave, existing role constraints, and configurable hours.
-- Return reasons/blockers with stable tie-breaking; no persistence mutation, AI explanation, proposal workflow, or UI.
+- Completed: read-only adapter contract and Prisma implementation over existing employee, availability, leave, and shift data.
+- Completed: synthetic Liam/Noah/Olivia tests plus inactive, unavailable, role, hours, zero-candidate, invalid-shift, and tie-breaking coverage.
+- Completed: deterministic blockers, reasons, configurable role/weekly-minute policy, and stable ranking.
+- Excluded: persistence mutation, AI explanation, proposal workflow, API, and UI.
 
 ## Later phases (not authorized)
 
