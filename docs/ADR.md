@@ -54,3 +54,10 @@
 - Failure behavior: timeout, HTTP error, malformed JSON, mismatched ID, empty text, or text over 800 characters returns the deterministic explanation.
 - Rationale: enables a real AMD-hosted vLLM path without giving the model authority over eligibility or mutation and without adding an SDK dependency.
 - Evidence boundary: adapter and mocked protocol tests do not prove AMD execution. Real endpoint, model, hardware, and latency remain unverified.
+
+## ADR-008 — Thin Manager UI over backend-owned workflow
+
+- Status: Accepted, 2026-10-13
+- Decision: Add a protected `/shiftops` page and an incident-scoped candidate evaluation endpoint. The browser may request and display evaluation results, but cannot submit scores, reasons, blockers, approval state, or schedule mutations as authoritative facts.
+- Rationale: this provides a compact end-to-end demo without duplicating business rules in React or weakening the existing human approval gate.
+- Consequence: managers currently enter an existing shift ID manually; richer shift selection and employee display names remain later UX work.

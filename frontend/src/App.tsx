@@ -12,6 +12,7 @@ import { ShiftsPage } from './pages/ShiftsPage';
 import { MyLeavePage } from './pages/MyLeavePage';
 import { LeaveManagementPage } from './pages/LeaveManagementPage';
 import { RosterPage } from './pages/RosterPage';
+import { ShiftOpsPage } from './pages/ShiftOpsPage';
 
 function HomeRedirect() {
   const { user } = useAuth();
@@ -25,6 +26,7 @@ export default function App() {
     <Route path="/shifts" element={<ProtectedRoute roles={['MANAGER']}><ShiftsPage /></ProtectedRoute>} />
     <Route path="/leave-requests" element={<ProtectedRoute roles={['MANAGER']}><LeaveManagementPage /></ProtectedRoute>} />
     <Route path="/roster" element={<ProtectedRoute roles={['MANAGER']}><RosterPage /></ProtectedRoute>} />
+    <Route path="/shiftops" element={<ProtectedRoute roles={['MANAGER']}><ShiftOpsPage /></ProtectedRoute>} />
     <Route path="/employees" element={<ProtectedRoute roles={['MANAGER']}><EmployeesPage /></ProtectedRoute>} />
     <Route path="/employees/:id" element={<ProtectedRoute roles={['MANAGER']}><EmployeeDetailPage /></ProtectedRoute>} />
     <Route path="/employees/:id/availability" element={<ProtectedRoute roles={['MANAGER']}><EmployeeAvailabilityPage /></ProtectedRoute>} />

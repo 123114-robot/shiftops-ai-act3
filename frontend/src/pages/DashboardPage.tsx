@@ -58,6 +58,7 @@ export function DashboardPage({ employee = false }: { employee?: boolean }) {
             <a href="/employees">Manage employees</a>
             <a href="/shifts">Manage shifts</a>
             <a href="/leave-requests">Review leave</a>
+            <a href="/shiftops">Open ShiftOps copilot</a>
           </div>
         )}
       </section>

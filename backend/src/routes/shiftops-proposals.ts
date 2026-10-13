@@ -13,7 +13,7 @@ import {
 
 type ProposalActions = Pick<
   ShiftOpsProposalService,
-  'createIncident' | 'createProposal' | 'approve' | 'reject' | 'apply' | 'get' | 'listAudit'
+  'createIncident' | 'evaluateIncident' | 'createProposal' | 'approve' | 'reject' | 'apply' | 'get' | 'listAudit'
 >;
 
 const incidentInput = z.object({
@@ -33,7 +33,7 @@ const fail = (response: Response, error: ProposalError) => {
 async function handle(
   response: Response,
   action: () => Promise<unknown>,
-  key: 'incident' | 'proposal',
+  key: 'incident' | 'evaluation' | 'proposal',
   status = 200,
 ) {
   try {
@@ -62,6 +62,10 @@ export function createShiftOpsProposalRouter(
     }
     const actorId = (request as AuthenticatedRequest).authUser!.id;
     await handle(response, () => service.createIncident(actorId, parsed.data.shiftId, parsed.data.reason), 'incident', 201);
+  });
+
+  router.post('/incidents/:id/evaluate', async (request, response) => {
+    await handle(response, () => service.evaluateIncident(String(request.params.id)), 'evaluation');
   });
 
   router.post('/proposals', async (request, response) => {
