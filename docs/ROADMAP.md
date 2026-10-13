@@ -32,14 +32,28 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 - Completed: backend service/route coverage plus a browser-component workflow test.
 - Excluded: automatic actions, richer shift picker, notifications, deployment, verified partner integration, and submission packaging.
 
-## Phase 5 — Submission readiness and evidence gate (current)
+## Phase 5 — Submission readiness and evidence gate (complete within its scoped deliverables)
 
 - Completed: refreshed public-requirement audit, public-repository verification, submission draft, checklist, five-minute demo script, runtime evidence template, and secret-safe readiness checker.
 - BLOCKED: authenticated enrollment/deadline confirmation, license compatibility, deployed application, video, deck, real AMD inference evidence, and any optional Evolus eligibility.
 - No real AMD/Evolus API call was made and no compliance claim is implied.
 
+## Phase 6 — Audit hardening (complete within its scoped deliverables)
+
+- Completed: CI branch coverage, strict business-time handling, constrained explanations, exhaustive proposal error mapping, reject UI, evidence-aware readiness checks, transaction-scoped proposal revalidation, provenance evidence, and bounded npm audit remediation.
+- Verified in GitHub CI with PostgreSQL: backend 81/81, frontend 17/17, readiness 4/4, plus lint, typecheck, and build.
+- PARTIAL: ordinary shift create/update does not yet validate and persist inside the shared employee lock protocol.
+- Complete handoff: `docs/OPEN_ISSUES_HANDOFF.md`.
+
+## Phase 7 — AMD Token Factory adapter (PR open; live inference blocked)
+
+- Implemented: explicit AMD provider configuration, fixed official Token Factory base URL, strict response schema/model/grounding validation, safe provenance, visible source labels, deterministic fallback, and a synthetic live-evidence command.
+- Verified: focused tests, full local non-database regression, lint, typecheck, build, and PR CI including PostgreSQL passed for commit `43e2359`.
+- BLOCKED: no `AI_API_KEY`, exact Token Factory model ID, successful live request, or human-reviewed runtime evidence is available.
+- Pull request: `https://github.com/123114-robot/shiftops-ai-act3/pull/7`; do not merge without review.
+
 ## Later work (not authorized)
 
-- Execute and record a real AMD-hosted inference run once approved infrastructure and credentials are available.
+- Execute and record a real AMD Token Factory inference run once credentials and an exact model ID are available.
 - Select and implement the optional Evolus track only with an event workspace and explicit track decision.
 - Deploy and submit only after the evidence gate is complete.

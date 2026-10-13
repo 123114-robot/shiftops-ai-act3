@@ -46,6 +46,8 @@ Database-backed tests require PostgreSQL and are not evidence of AMD/Evolus acce
 
 ## Known blockers and unknowns
 
+See `docs/OPEN_ISSUES_HANDOFF.md` for the issue-by-issue handoff, evidence requirements, and remaining owner decisions.
+
 - User registration, ADP approval, team enrollment, and event workspace access cannot be verified from public pages.
 - Public pages conflict: overview says online build ends 18 October, while the live page says 17 October. Exact cutoff time/timezone remains unverified.
 - AMD Developer Cloud allocation, credentials, model endpoint, and inference evidence are unavailable locally.
