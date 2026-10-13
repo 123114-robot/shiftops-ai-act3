@@ -21,12 +21,12 @@ describe('ShiftOps explanation providers', () => {
     );
   });
 
-  it('uses a grounded OpenAI-compatible response when the employee id matches', async () => {
+  it('uses a trusted renderer for a valid structured response', async () => {
     const fetcher = vi.fn(async () => new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify({
         employeeId: 'employee-liam',
-        explanation: 'Employee Liam satisfies every validated scheduling constraint.',
         reasonCodes: facts.reasons,
+        style: 'concise',
       }) } }],
     }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
     const remote = new OpenAICompatibleExplanationProvider({
@@ -35,7 +35,7 @@ describe('ShiftOps explanation providers', () => {
     const provider = new GroundedExplanationProvider(remote, new DeterministicExplanationProvider());
 
     await expect(provider.explain(facts)).resolves.toBe(
-      'Employee Liam satisfies every validated scheduling constraint.',
+      'Recommend employee-liam for shift shift-1: active employee; available for the full shift; no overlapping shift; no approved leave; within the weekly hours limit.',
     );
     expect(fetcher).toHaveBeenCalledOnce();
     expect(fetcher.mock.calls[0]?.[0]).toBe('https://amd.example/v1/chat/completions');
@@ -43,7 +43,7 @@ describe('ShiftOps explanation providers', () => {
 
   it('rejects a mismatched candidate and falls back deterministically', async () => {
     const remote = { generate: async () => ({
-      employeeId: 'employee-noah', explanation: 'Choose Noah.', reasonCodes: facts.reasons,
+      employeeId: 'employee-noah', style: 'concise' as const, reasonCodes: facts.reasons,
     }) };
     const provider = new GroundedExplanationProvider(remote, new DeterministicExplanationProvider());
     await expect(provider.explain(facts)).resolves.toContain('Recommend employee-liam');
@@ -53,11 +53,28 @@ describe('ShiftOps explanation providers', () => {
     const provider = new GroundedExplanationProvider({
       generate: async () => ({
         employeeId: facts.employeeId,
-        explanation: 'Invented qualification claim.',
+        style: 'concise' as const,
         reasonCodes: [...facts.reasons.slice(0, -1), 'INVENTED_QUALIFICATION'],
       }),
     }, new DeterministicExplanationProvider());
     await expect(provider.explain(facts)).resolves.toContain('Recommend employee-liam');
+  });
+
+  it('rejects duplicate reasons and extra free-text claims', async () => {
+    const fallback = new DeterministicExplanationProvider();
+    await expect(new GroundedExplanationProvider({ generate: async () => ({
+      employeeId: facts.employeeId, style: 'concise' as const,
+      reasonCodes: [...facts.reasons, facts.reasons[0]!],
+    }) }, fallback).explain(facts)).resolves.toContain('because: ACTIVE');
+
+    const fetcher = vi.fn(async () => new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({
+      employeeId: facts.employeeId, style: 'concise', reasonCodes: facts.reasons,
+      explanation: 'Also legally qualified and always punctual.',
+    }) } }] }), { status: 200 }));
+    const remote = new OpenAICompatibleExplanationProvider({
+      baseUrl: 'https://amd.example/v1', apiKey: 'secret', model: 'open-model', timeoutMs: 500,
+    }, fetcher);
+    await expect(new GroundedExplanationProvider(remote, fallback).explain(facts)).resolves.toContain('because: ACTIVE');
   });
 
   it('falls back on provider errors, malformed output, and timeout', async () => {

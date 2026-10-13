@@ -10,6 +10,7 @@ const repository=(overrides:Partial<SchedulingRepository>={}):SchedulingReposito
   ...overrides,
 });
 describe('SchedulingService',()=>{
+  it('rejects non-strict or reversed shift times',async()=>{const service=new SchedulingService(repository());for(const [startTime,endTime] of [['9:00','17:00'],['24:00','25:00'],['17:00','09:00']])await expect(service.validate({...candidate,startTime,endTime})).rejects.toMatchObject({code:'INVALID_SHIFT_TIME'});});
   it('rejects equal or reversed times',async()=>{const service=new SchedulingService(repository());await expect(service.validate({...candidate,endTime:'09:00'})).rejects.toMatchObject({code:'INVALID_SHIFT_TIME'});await expect(service.validate({...candidate,startTime:'18:00'})).rejects.toMatchObject({code:'INVALID_SHIFT_TIME'});});
   it('rejects overlapping shifts',async()=>{const service=new SchedulingService(repository({hasOverlap:async()=>true}));await expect(service.validate(candidate)).rejects.toMatchObject({code:'SHIFT_OVERLAP'});});
   it('allows adjacent non-overlapping shifts',async()=>{const service=new SchedulingService(repository({getAvailability:async()=>({isAvailable:true,startTime:'09:00',endTime:'20:00'}),hasOverlap:async(_employeeId,_date,start)=>start!=='17:00'}));await expect(service.validate({...candidate,startTime:'17:00',endTime:'20:00'})).resolves.toBeUndefined();});
