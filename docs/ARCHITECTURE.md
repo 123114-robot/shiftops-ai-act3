@@ -62,7 +62,7 @@ Remote mode uses the standard OpenAI-compatible `POST /chat/completions` contrac
 
 Ordinary shift create, update/reassignment, unassignment, and cancellation now use the same employee-scoped advisory-lock and Serializable retry protocol as proposal apply, availability replacement, and approved-leave review. `PrismaShiftRepository` performs scheduling validation through a transaction-scoped `PrismaSchedulingRepository` immediately before persistence. Reassignments lock the old and new employee IDs in deterministic lexical order. The API contract is unchanged, and retry exhaustion produces a stable scheduling conflict rather than a partial write.
 
-PostgreSQL race tests verify that ordinary creation or reassignment racing proposal apply cannot both assign the same employee to overlapping shifts. Each race matrix passed five consecutive runs locally, followed by a complete 86/86 backend run with database tests enabled. Availability/leave cross-route race combinations and production load behavior remain separate verification work.
+PostgreSQL race tests verify that ordinary creation or reassignment racing proposal apply cannot both assign the same employee to overlapping shifts. Availability replacement now rejects a reduction that conflicts with a current/future assigned shift, and leave approval rejects a date range containing an assigned shift; both checks occur after the shared employee lock and before persistence. The six-case database race matrix passed five consecutive runs locally, followed by a complete 88/88 backend run with database tests enabled. Production load, lock-wait telemetry, and retry-exhaustion behavior remain separate verification work.
 
 ## Phase 4 Manager UI
 

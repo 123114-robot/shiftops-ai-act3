@@ -45,8 +45,9 @@ Last updated: 2026-10-14 (Australia/Sydney)
 - Phase 8 focused tests: PASS, 19 unit/route/transaction tests including deterministic multi-employee lock ordering.
 - Phase 8 initial non-database regression: PASS, 81 backend and 17 frontend tests; database tests were initially skipped before Docker Desktop was started.
 - Phase 8 lint, typecheck, production build, and `git diff --check`: PASS.
-- Phase 8 PostgreSQL verification: PASS, schema synchronized with the local disposable database and all 86 backend tests passed with zero skips.
-- Phase 8 race stability: PASS, the four-test proposal/database suite—including ordinary create and reassignment versus proposal apply—passed five consecutive runs before the final full backend run.
+- Phase 8 PostgreSQL verification: PASS, schema synchronized with the local disposable database and all 88 backend tests passed with zero skips; frontend 17/17 also passed.
+- Phase 8 race stability: PASS, the six-test proposal/database suite—including ordinary create/reassignment, availability reduction, and leave approval cross-route races—passed five consecutive runs before the final full regression.
+- Phase 8 conflict behavior: availability reductions conflicting with current/future assigned shifts and leave approvals overlapping assigned shifts return `SCHEDULE_CONFLICT` without partial mutation.
 
 Database-backed tests require PostgreSQL and are not evidence of AMD/Evolus access.
 
@@ -62,7 +63,7 @@ See `docs/OPEN_ISSUES_HANDOFF.md` for the issue-by-issue handoff, evidence requi
 - Track selection remains open; Evolus is optional for the main event but mandatory for its partner prize.
 - GitHub detects no license for this repository or its ShiftFlow source; ownership and MIT-compatibility must be resolved before submission.
 - Six full-tree dependency advisories remain; resolving them requires compatibility testing of Vitest/Prisma version changes. No forced fix was used.
-- Proposal apply, availability replacement, approved leave, and ordinary shift writes share the employee-lock/Serializable protocol. PostgreSQL verifies ordinary create/reassignment versus proposal apply; availability/leave cross-route race combinations and production-load behavior remain unverified.
+- Proposal apply, availability replacement, approved leave, and ordinary shift writes share the employee-lock/Serializable protocol. PostgreSQL verifies the core cross-route matrix. Production load, lock-wait telemetry, and forced retry-exhaustion behavior remain unverified.
 
 ## Phase gate
 

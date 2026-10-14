@@ -55,8 +55,8 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 ## Phase 8 — Scheduling-write serialization (complete locally)
 
 - Implemented: ordinary shift create/update/reassignment/unassignment/cancel use transaction-scoped validation, deterministic employee lock ordering, Serializable retry, and stable concurrency errors.
-- Verified locally: focused unit/route/transaction tests, lint, typecheck, production build, and 86/86 backend tests with PostgreSQL enabled.
-- PostgreSQL evidence: ordinary create and reassignment versus proposal apply race matrices each passed five consecutive runs; every run allowed only one overlapping assignment to commit.
+- Verified locally: focused unit/route/transaction tests, lint, typecheck, production build, 88/88 backend tests with PostgreSQL enabled, and 17/17 frontend tests.
+- PostgreSQL evidence: the six-case matrix covers proposal apply, ordinary create/reassignment, availability reduction, and leave approval; it passed five consecutive runs and every conflict allowed only one incompatible mutation to commit.
 - Delivery state: local branch only; not pushed, merged, or deployed.
 
 ## Later work (not authorized)

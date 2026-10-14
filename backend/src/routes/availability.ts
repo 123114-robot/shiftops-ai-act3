@@ -33,7 +33,7 @@ async function handleRead(response: Response, action: () => Promise<unknown>) {
     response.json({ availability: await action() });
   } catch (error) {
     if (error instanceof AvailabilityError) {
-      response.status(404).json({ error: { code: error.code, message: error.message } });
+      response.status(error.code === 'NOT_FOUND' ? 404 : 409).json({ error: { code: error.code, message: error.message } });
       return;
     }
     throw error;

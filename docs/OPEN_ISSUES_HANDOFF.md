@@ -26,7 +26,7 @@ The application skeleton and Phases 0–7 are substantially implemented and test
 | U-02 | Resolve source ownership and licensing | BLOCKED | Repository owner/legal decision | User / owner |
 | U-03 | Prove real AMD-hosted inference | BLOCKED | AMD access, endpoint, model, credentials | Infrastructure engineer |
 | U-04 | Decide whether to enter the Evolus partner track | NOT SELECTED | Product decision and event workspace | User / architect |
-| U-05 | Extend scheduling concurrency evidence matrix | VERIFIED CORE / PARTIAL MATRIX | Additional PostgreSQL race cases | Backend engineer |
+| U-05 | Scheduling concurrency hardening | VERIFIED CORE | Operational load and telemetry follow-up | Backend engineer |
 | U-06 | Remediate remaining dependency advisories | PARTIAL | Compatibility-tested upgrades | Maintainer |
 | U-07 | Create a production database migration baseline | UNVERIFIED / REQUIRED FOR RELEASE | Deployment database strategy | Backend/DevOps engineer |
 | U-08 | Deploy a publicly reachable prototype | BLOCKED | Platform, secrets, database, budget decision | DevOps engineer |
@@ -148,7 +148,7 @@ If not selected, record `Evolus: not used` truthfully and do not add placeholder
 
 ## U-05 — Ordinary shift create/update concurrency gap
 
-**Current status:** VERIFIED for ordinary create/reassignment versus proposal apply; broader race matrix remains PARTIAL.
+**Current status:** VERIFIED CORE across proposal apply, ordinary shift writes, availability reduction, and leave approval.
 
 ### What is already protected
 
@@ -163,14 +163,13 @@ If not selected, record `Evolus: not used` truthfully and do not add placeholder
 
 ### Exact remaining gap
 
-The implementation and regressions pass. PostgreSQL race tests for ordinary create and reassignment versus proposal apply each passed five consecutive matrix runs and the final 86/86 backend run. Availability replacement and approved-leave mutation use the shared lock in code, but their races against ordinary shift mutation do not yet have direct cross-route PostgreSQL tests. Production contention and lock-wait behavior also remain unmeasured.
+The implementation and regressions pass. The six-case PostgreSQL suite covers proposal apply, ordinary create/reassignment, availability reduction, and leave approval. It passed five consecutive matrix runs and the final 88/88 backend run. Availability/leave conflicts return `SCHEDULE_CONFLICT` inside the transaction. Production contention, lock-wait telemetry, and forced retry-exhaustion behavior remain unmeasured.
 
 ### Remaining verification questions
 
-1. Does the new cross-route race pass repeatedly against the CI PostgreSQL service?
-2. Do update/reassignment, availability, and approved-leave races exhibit the same one-writer outcome?
-3. Does retry exhaustion leave shifts, proposals, incidents, and audit records unchanged?
-4. Are advisory-lock wait time and retry telemetry sufficient for deployment diagnostics?
+1. Does the same matrix pass against the GitHub CI PostgreSQL service after publication?
+2. Does forced retry exhaustion leave shifts, proposals, incidents, and audit records unchanged?
+3. Are advisory-lock wait time and retry telemetry sufficient for deployment diagnostics?
 
 ### Required tests
 
