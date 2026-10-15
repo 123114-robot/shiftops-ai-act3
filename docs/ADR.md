@@ -71,11 +71,11 @@
 
 ## ADR-010 — Transactional proposal revalidation
 
-- Status: Accepted with residual risk, 2026-10-13
+- Status: Superseded by ADR-013 for ordinary shift writes, 2026-10-14
 - Decision: Use employee-scoped PostgreSQL transaction advisory locks, Serializable proposal-apply transactions, transaction-scoped eligibility reads, and at most three full P2034 retries.
 - Atomicity: shift assignment, proposal state, incident state and audit remain one transaction; optimistic proposal version and shift `updatedAt` guards remain active.
 - Shared writes: availability replacement and approved leave review take the same employee lock.
-- Residual risk: ordinary shift create/update still validates before its repository write and does not yet perform validation inside the shared lock. Full cross-route serialization is therefore PARTIAL, not claimed complete.
+- Historical residual risk: ordinary shift create/update originally validated before its repository write. ADR-013 moves those paths into the shared lock/transaction protocol; real PostgreSQL cross-route verification remains pending.
 
 ## ADR-011 — Deterministically rendered remote explanations
 
@@ -90,3 +90,12 @@
 - Provenance: require the response model to match `AI_MODEL`; locally label AMD success, deterministic fallback, deterministic-only mode, and explicit mocks; log only sanitized model/request/latency metadata.
 - Compatibility: no API, database, scheduling, approval, or transaction boundary changes. Generic OpenAI-compatible remote mode remains available but cannot satisfy the AMD readiness gate.
 - Evidence boundary: implementation and mock tests do not prove AMD execution. Only a successful real verification command plus human-reviewed platform evidence may mark AMD runtime as verified.
+
+## ADR-013 — Atomic ordinary shift writes
+
+- Status: Accepted and PostgreSQL-verified for create/reassignment versus proposal apply, 2026-10-14
+- Decision: `PrismaShiftRepository` owns validation and persistence for create, update/reassignment, unassignment, and cancellation inside one Serializable transaction using the shared employee advisory-lock protocol.
+- Lock ordering: operations affecting old and new employees deduplicate IDs and acquire locks in lexical order to avoid cross-reassignment deadlocks.
+- Compatibility: REST routes, request/response schemas, scheduling rules, authentication, and MANAGER RBAC remain unchanged. Exhausted Prisma `P2034` retries map to stable `CONCURRENT_SCHEDULE_UPDATE` conflict responses.
+- Availability and leave safety: a recurring availability replacement that conflicts with a current/future assigned shift, or approval of leave that overlaps an assigned shift, fails with `SCHEDULE_CONFLICT` inside the same locked transaction. Historical shifts do not block availability changes.
+- Evidence boundary: unit, route, lint, typecheck, and build validation pass. Six PostgreSQL transaction/race tests cover proposal apply, ordinary create/reassignment, availability reduction, and leave approval. Production load, lock-wait telemetry, and retry exhaustion remain outside this evidence.

@@ -7,6 +7,11 @@ export async function lockEmployeeSchedule(tx: TransactionClient, employeeId: st
   await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${employeeId}))`;
 }
 
+export async function lockEmployeeSchedules(tx: TransactionClient, employeeIds: Array<string | null | undefined>) {
+  const orderedIds = [...new Set(employeeIds.filter((id): id is string => Boolean(id)))].sort();
+  for (const employeeId of orderedIds) await lockEmployeeSchedule(tx, employeeId);
+}
+
 export async function withSerializableRetry<T>(
   action: (tx: TransactionClient) => Promise<T>,
   client: Pick<PrismaClient, '$transaction'> = prisma,

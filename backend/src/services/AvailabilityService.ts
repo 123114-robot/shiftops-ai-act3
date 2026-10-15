@@ -19,7 +19,7 @@ export interface AvailabilityRepository {
 }
 
 export class AvailabilityError extends Error {
-  constructor(public readonly code: 'NOT_FOUND', message: string) { super(message); }
+  constructor(public readonly code: 'NOT_FOUND' | 'SCHEDULE_CONFLICT', message: string) { super(message); }
 }
 
 export class AvailabilityService {
