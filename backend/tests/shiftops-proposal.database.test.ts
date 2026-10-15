@@ -77,4 +77,30 @@ databaseDescribe('ShiftOps proposal database transaction', () => {
       expect.objectContaining<Partial<ProposalError>>({ code: 'INVALID_PROPOSAL_STATE' }),
     );
   });
+
+  it('serializes overlapping proposal applies for the same employee', async () => {
+    const suffix = `${Date.now()}-${Math.random()}`;
+    const manager = await prisma.user.create({ data: { email: `manager-race-${suffix}@test.local`, passwordHash: 'not-used', role: 'MANAGER' } });
+    const employeeUser = await prisma.user.create({ data: { email: `employee-race-${suffix}@test.local`, passwordHash: 'not-used', role: 'EMPLOYEE' } });
+    createdUserIds.push(manager.id, employeeUser.id);
+    const employee = await prisma.employee.create({ data: { userId: employeeUser.id, firstName: 'Race', lastName: 'Synthetic', email: `race-${suffix}@test.local`, jobTitle: 'team-member' } });
+    await prisma.availability.create({ data: { employeeId: employee.id, dayOfWeek: 'MONDAY', startTime: '09:00', endTime: '17:00', isAvailable: true } });
+    const shifts = await Promise.all(['first', 'second'].map(notes => prisma.shift.create({ data: {
+      date: new Date('2026-10-19T00:00:00.000Z'), startTime: '09:00', endTime: '17:00', role: 'team-member', notes, createdById: manager.id,
+    } })));
+    const policy = { maxWeeklyMinutes: 2_400, requireRoleMatch: true };
+    const service = new ShiftOpsProposalService(new PrismaProposalRepository(policy), new ShiftOpsEligibilityService(new PrismaShiftOpsRepository(), policy));
+    const approved = [];
+    for (const shift of shifts) {
+      const incident = await service.createIncident(manager.id, shift.id, 'employee_unavailable');
+      const proposal = await service.createProposal(manager.id, incident.id, employee.id);
+      approved.push(await service.approve(proposal.id, manager.id));
+    }
+
+    const results = await Promise.allSettled(approved.map(proposal => service.apply(proposal.id, manager.id)));
+    expect(results.filter(result => result.status === 'fulfilled')).toHaveLength(1);
+    expect(results.filter(result => result.status === 'rejected')).toHaveLength(1);
+    expect(await prisma.shift.count({ where: { id: { in: shifts.map(shift => shift.id) }, employeeId: employee.id } })).toBe(1);
+    expect(await prisma.shiftOpsAuditEvent.count({ where: { actorId: manager.id, action: 'PROPOSAL_APPLIED' } })).toBe(1);
+  });
 });

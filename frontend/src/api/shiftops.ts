@@ -23,7 +23,7 @@ export async function evaluateIncident(token: string, incidentId: string) {
 export async function createProposal(token: string, incidentId: string, replacementEmployeeId: string) {
   return (await call<{ proposal: Proposal }>(token, '/proposals', { method: 'POST', body: JSON.stringify({ incidentId, replacementEmployeeId }) })).proposal;
 }
-export async function transitionProposal(token: string, proposalId: string, action: 'approve' | 'apply') {
+export async function transitionProposal(token: string, proposalId: string, action: 'approve' | 'reject' | 'apply') {
   return (await call<{ proposal: Proposal }>(token, `/proposals/${proposalId}/${action}`, { method: 'POST' })).proposal;
 }
 export async function listAudit(token: string) {

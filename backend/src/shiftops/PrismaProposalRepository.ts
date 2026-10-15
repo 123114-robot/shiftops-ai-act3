@@ -3,10 +3,17 @@ import {
   ProposalError,
   type ProposalRepository,
 } from './ShiftOpsProposalService.js';
+import { PrismaShiftOpsRepository } from './PrismaShiftOpsRepository.js';
+import { ShiftOpsEligibilityService, type ShiftOpsEligibilityPolicy } from './ShiftOpsEligibilityService.js';
+import { lockEmployeeSchedule, withSerializableRetry } from './SchedulingTransaction.js';
 
 const proposalInclude = { incident: true } as const;
 
 export class PrismaProposalRepository implements ProposalRepository {
+  constructor(private readonly eligibilityPolicy: ShiftOpsEligibilityPolicy = {
+    maxWeeklyMinutes: 2_400,
+    requireRoleMatch: true,
+  }) {}
   async shiftExists(shiftId: string) {
     return (await prisma.shift.count({ where: { id: shiftId, status: { not: 'CANCELLED' } } })) > 0;
   }
@@ -109,13 +116,24 @@ export class PrismaProposalRepository implements ProposalRepository {
   }
 
   async applyProposal(input: { id: string; expectedVersion: number; actorId: string }) {
-    return prisma.$transaction(async tx => {
+    return withSerializableRetry(async tx => {
+      const initial = await tx.shiftProposal.findUniqueOrThrow({ where: { id: input.id } });
+      await lockEmployeeSchedule(tx, initial.replacementEmployeeId);
       const proposal = await tx.shiftProposal.findUniqueOrThrow({
         where: { id: input.id },
         include: { incident: true },
       });
       if (proposal.status !== 'APPROVED' || proposal.version !== input.expectedVersion) {
         throw new ProposalError('CONCURRENT_UPDATE', 'Proposal changed before it could be applied.');
+      }
+
+      const evaluation = await new ShiftOpsEligibilityService(
+        new PrismaShiftOpsRepository(tx),
+        this.eligibilityPolicy,
+      ).evaluate(proposal.incident.shiftId);
+      const candidate = evaluation.candidates.find(item => item.employeeId === proposal.replacementEmployeeId);
+      if (!candidate?.eligible) {
+        throw new ProposalError('CANDIDATE_INELIGIBLE', 'Replacement employee is no longer eligible for this shift.');
       }
 
       const shiftUpdate = await tx.shift.updateMany({

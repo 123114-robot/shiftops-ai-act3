@@ -8,6 +8,7 @@ import {
 import type { AuthenticationService } from '../services/AuthenticationService.js';
 import {
   ProposalError,
+  type ProposalErrorCode,
   type ShiftOpsProposalService,
 } from '../shiftops/ShiftOpsProposalService.js';
 
@@ -25,10 +26,15 @@ const proposalInput = z.object({
   replacementEmployeeId: z.string().trim().min(1),
 });
 
-const fail = (response: Response, error: ProposalError) => {
-  const notFound = ['SHIFT_NOT_FOUND', 'INCIDENT_NOT_FOUND', 'PROPOSAL_NOT_FOUND'].includes(error.code);
-  response.status(notFound ? 404 : 409).json({ error: { code: error.code, message: error.message } });
+const proposalErrorStatuses: Record<ProposalErrorCode, 404 | 409> = {
+  SHIFT_NOT_FOUND: 404, INCIDENT_NOT_FOUND: 404, PROPOSAL_NOT_FOUND: 404,
+  INCIDENT_CLOSED: 409, CANDIDATE_INELIGIBLE: 409, INVALID_PROPOSAL_STATE: 409,
+  CONCURRENT_UPDATE: 409, STALE_PROPOSAL: 409,
 };
+export const proposalErrorStatus = (code: ProposalErrorCode) => proposalErrorStatuses[code];
+const fail = (response: Response, error: ProposalError) => response
+  .status(proposalErrorStatus(error.code))
+  .json({ error: { code: error.code, message: error.message } });
 
 async function handle(
   response: Response,

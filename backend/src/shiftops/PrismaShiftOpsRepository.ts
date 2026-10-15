@@ -4,25 +4,16 @@ import type {
   ShiftOpsShift,
 } from './ShiftOpsEligibilityService.js';
 import { prisma } from '../repositories/prisma.js';
+import { businessDayOfWeek, parseStrictTime, startOfBusinessWeek } from './BusinessTime.js';
+import type { TransactionClient } from './SchedulingTransaction.js';
 
-const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'] as const;
-
-const timeToMinutes = (time: string) => {
-  const [hours = 0, minutes = 0] = time.split(':').map(Number);
-  return hours * 60 + minutes;
-};
-
-const startOfUtcWeek = (date: Date) => {
-  const start = new Date(date);
-  const daysSinceMonday = (start.getUTCDay() + 6) % 7;
-  start.setUTCDate(start.getUTCDate() - daysSinceMonday);
-  start.setUTCHours(0, 0, 0, 0);
-  return start;
-};
+type ShiftOpsDb = Pick<TransactionClient, 'shift' | 'employee'>;
 
 export class PrismaShiftOpsRepository implements ShiftOpsRepository {
+  constructor(private readonly db: ShiftOpsDb = prisma) {}
+
   findShift(shiftId: string) {
-    return prisma.shift.findUnique({
+    return this.db.shift.findUnique({
       where: { id: shiftId },
       select: {
         id: true,
@@ -36,17 +27,17 @@ export class PrismaShiftOpsRepository implements ShiftOpsRepository {
   }
 
   async listCandidateRecords(shift: ShiftOpsShift): Promise<ShiftOpsCandidateRecord[]> {
-    const weekStart = startOfUtcWeek(shift.date);
+    const weekStart = startOfBusinessWeek(shift.date);
     const weekEnd = new Date(weekStart);
     weekEnd.setUTCDate(weekEnd.getUTCDate() + 6);
 
-    const employees = await prisma.employee.findMany({
+    const employees = await this.db.employee.findMany({
       select: {
         id: true,
         status: true,
         jobTitle: true,
         availability: {
-          where: { dayOfWeek: days[shift.date.getUTCDay()] },
+          where: { dayOfWeek: businessDayOfWeek(shift.date) },
           select: { isAvailable: true, startTime: true, endTime: true },
         },
         leaveRequests: {
@@ -79,9 +70,14 @@ export class PrismaShiftOpsRepository implements ShiftOpsRepository {
         && assignedShift.startTime < shift.endTime
         && assignedShift.endTime > shift.startTime
       )),
-      weeklyScheduledMinutes: employee.shifts.reduce((total, assignedShift) => (
-        total + timeToMinutes(assignedShift.endTime) - timeToMinutes(assignedShift.startTime)
-      ), 0),
+      weeklyScheduledMinutes: employee.shifts.reduce((total, assignedShift) => {
+        const start = parseStrictTime(assignedShift.startTime);
+        const end = parseStrictTime(assignedShift.endTime);
+        if (start === null || end === null || start >= end) {
+          throw new Error(`Shift ${assignedShift.date.toISOString()} has invalid stored time.`);
+        }
+        return total + end - start;
+      }, 0),
     }));
   }
 }

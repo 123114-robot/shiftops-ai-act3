@@ -59,15 +59,6 @@ export class ShiftOpsEligibilityError extends Error {
   }
 }
 
-const timeToMinutes = (time: string) => {
-  const match = /^(\d{2}):(\d{2})$/.exec(time);
-  if (!match) return null;
-  const hours = Number(match[1]);
-  const minutes = Number(match[2]);
-  if (hours > 23 || minutes > 59) return null;
-  return hours * 60 + minutes;
-};
-
 const roleMatches = (jobTitle: string, role: string) => (
   jobTitle.trim().toLowerCase() === role.trim().toLowerCase()
 );
@@ -88,8 +79,8 @@ export class ShiftOpsEligibilityService {
       throw new ShiftOpsEligibilityError('SHIFT_NOT_FOUND', 'Shift not found.');
     }
 
-    const startMinutes = timeToMinutes(shift.startTime);
-    const endMinutes = timeToMinutes(shift.endTime);
+    const startMinutes = parseStrictTime(shift.startTime);
+    const endMinutes = parseStrictTime(shift.endTime);
     if (startMinutes === null || endMinutes === null || startMinutes >= endMinutes) {
       throw new ShiftOpsEligibilityError('INVALID_SHIFT_TIME', 'Shift end time must be later than start time.');
     }
@@ -143,3 +134,5 @@ export class ShiftOpsEligibilityService {
     return { shiftId: shift.id, candidates };
   }
 }
+import { parseStrictTime } from './BusinessTime.js';
+

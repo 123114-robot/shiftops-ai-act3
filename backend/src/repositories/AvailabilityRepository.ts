@@ -1,5 +1,6 @@
 import type { AvailabilityInput, AvailabilityRepository } from '../services/AvailabilityService.js';
 import { prisma } from './prisma.js';
+import { lockEmployeeSchedule, withSerializableRetry } from '../shiftops/SchedulingTransaction.js';
 
 export class PrismaAvailabilityRepository implements AvailabilityRepository {
   async employeeExists(employeeId: string) {
@@ -11,11 +12,16 @@ export class PrismaAvailabilityRepository implements AvailabilityRepository {
   }
 
   async replaceWeekly(employeeId: string, entries: AvailabilityInput[]) {
-    await prisma.$transaction(entries.map((entry) => prisma.availability.upsert({
-      where: { employeeId_dayOfWeek: { employeeId, dayOfWeek: entry.dayOfWeek } },
-      update: entry,
-      create: { employeeId, ...entry },
-    })));
+    await withSerializableRetry(async tx => {
+      await lockEmployeeSchedule(tx, employeeId);
+      for (const entry of entries) {
+        await tx.availability.upsert({
+          where: { employeeId_dayOfWeek: { employeeId, dayOfWeek: entry.dayOfWeek } },
+          update: entry,
+          create: { employeeId, ...entry },
+        });
+      }
+    });
     return this.findByEmployeeId(employeeId);
   }
 }

@@ -61,3 +61,32 @@
 - Decision: Add a protected `/shiftops` page and an incident-scoped candidate evaluation endpoint. The browser may request and display evaluation results, but cannot submit scores, reasons, blockers, approval state, or schedule mutations as authoritative facts.
 - Rationale: this provides a compact end-to-end demo without duplicating business rules in React or weakening the existing human approval gate.
 - Consequence: managers currently enter an existing shift ID manually; richer shift selection and employee display names remain later UX work.
+
+## ADR-009 — Date-only calendar invariant
+
+- Status: Accepted, 2026-10-13
+- Decision: Treat Prisma `@db.Date` fields as date-only business values encoded by Prisma as UTC midnight. Weekday and Monday-week boundaries therefore use UTC accessors and are not converted through `Australia/Sydney`.
+- Rationale: timezone conversion of a date-only encoding can change the calendar day around offsets/DST. Sydney DST boundary tests preserve the stored date.
+- Time contract: shift times use strict `HH:mm`, must be in 00:00–23:59, and end after start. Overnight shifts remain out of scope.
+
+## ADR-010 — Transactional proposal revalidation
+
+- Status: Accepted with residual risk, 2026-10-13
+- Decision: Use employee-scoped PostgreSQL transaction advisory locks, Serializable proposal-apply transactions, transaction-scoped eligibility reads, and at most three full P2034 retries.
+- Atomicity: shift assignment, proposal state, incident state and audit remain one transaction; optimistic proposal version and shift `updatedAt` guards remain active.
+- Shared writes: availability replacement and approved leave review take the same employee lock.
+- Residual risk: ordinary shift create/update still validates before its repository write and does not yet perform validation inside the shared lock. Full cross-route serialization is therefore PARTIAL, not claimed complete.
+
+## ADR-011 — Deterministically rendered remote explanations
+
+- Status: Accepted, 2026-10-13
+- Decision: Remote providers may return only employee ID, the exact reason-code set and a constrained style. User-visible explanation text is rendered locally from trusted reason-code labels.
+- Rationale: free text could introduce unsupported scheduling claims even when IDs and reason codes matched.
+
+## ADR-012 — AMD Token Factory through the existing grounded adapter
+
+- Status: Accepted, 2026-10-14
+- Decision: identify AMD explicitly with `AI_PROVIDER=amd-token-factory`, use the official shared Token Factory base URL, and reuse the existing OpenAI-compatible and grounded-rendering pipeline.
+- Provenance: require the response model to match `AI_MODEL`; locally label AMD success, deterministic fallback, deterministic-only mode, and explicit mocks; log only sanitized model/request/latency metadata.
+- Compatibility: no API, database, scheduling, approval, or transaction boundary changes. Generic OpenAI-compatible remote mode remains available but cannot satisfy the AMD readiness gate.
+- Evidence boundary: implementation and mock tests do not prove AMD execution. Only a successful real verification command plus human-reviewed platform evidence may mark AMD runtime as verified.
