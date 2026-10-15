@@ -1,16 +1,18 @@
 # Project Status
 
-Last updated: 2026-10-14 (Australia/Sydney)
+Last updated: 2026-10-16 (Australia/Sydney)
 
 ## Current state
 
-- Phase: 8 scheduling-write serialization
+- Phase: 9 reproducible competition demo evidence
 - Source: local ShiftFlow checkout, branch `codex/phase-9-basic-dashboard`, commit `6ea907b`
 - Original checkout: clean and unchanged during this work
-- New repository: isolated, public GitHub repository; working branch `feature/phase-8-scheduling-write-serialization`
+- New repository: isolated, public GitHub repository; working branch `feature/phase-9-demo-readiness`
 - Implemented: Phases 0–5 plus CI coverage, strict business-time handling, transaction-scoped proposal revalidation, constrained explanations, typed error mapping, reject UI, provenance and audit hardening
 - Implemented in Phase 7: official Token Factory endpoint contract, explicit provider/source labels, response-model provenance validation, sanitized inference trace, and reproducible synthetic evidence command
 - Implemented locally in Phase 8: ordinary shift create/update/reassignment/unassignment/cancel now validate and persist inside the shared employee-lock and Serializable transaction boundary
+- Remediated after the Phase 8 independent audit: leave review now performs an atomic pending-state transition and maps exhausted serialization conflicts without weakening Manager authorization or schedule-conflict checks
+- Implemented locally in Phase 9: a self-cleaning synthetic PostgreSQL evidence command that verifies the full incident-to-audit workflow and measures the backend-derived unfilled-shift delta without claiming AMD execution
 - Not verified: successful live AMD request (credentials/model unavailable), AMD account/hardware evidence, Evolus, deployment, video, deck, or portal submission
 
 ## Validation
@@ -48,6 +50,9 @@ Last updated: 2026-10-14 (Australia/Sydney)
 - Phase 8 PostgreSQL verification: PASS, schema synchronized with the local disposable database and all 88 backend tests passed with zero skips; frontend 17/17 also passed.
 - Phase 8 race stability: PASS, the six-test proposal/database suite—including ordinary create/reassignment, availability reduction, and leave approval cross-route races—passed five consecutive runs before the final full regression.
 - Phase 8 conflict behavior: availability reductions conflicting with current/future assigned shifts and leave approvals overlapping assigned shifts return `SCHEDULE_CONFLICT` without partial mutation.
+- Phase 9 source verification: `demo:verify` creates isolated synthetic Manager/candidates/shift data, requires an eligible operator plus a role-blocked candidate, applies the approved proposal, checks all four audit actions, measures one fewer unfilled shift, and deletes its fixture records.
+- Phase 9 PostgreSQL execution: PASS on 2026-10-16; one eligible and one role-blocked candidate were observed, unfilled shifts changed from 1 to 0, the proposal reached `APPLIED`, all four expected audit actions were present, and the synthetic fixture was removed.
+- Phase 9 milestone regression: PASS with PostgreSQL enabled for 95/95 backend tests across 25 files with zero skips, 17/17 frontend tests, readiness 5/5, lint, typecheck, production build, and `git diff --check`.
 
 Database-backed tests require PostgreSQL and are not evidence of AMD/Evolus access.
 
@@ -67,4 +72,4 @@ See `docs/OPEN_ISSUES_HANDOFF.md` for the issue-by-issue handoff, evidence requi
 
 ## Phase gate
 
-Stop after the local Phase 8 checkpoint. Do not push, merge, deploy, submit, or begin another phase without explicit approval.
+Complete and stop after the local Phase 9 checkpoint. Do not push, merge, deploy, submit, or begin another phase without explicit approval.

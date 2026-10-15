@@ -59,6 +59,12 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 - PostgreSQL evidence: the six-case matrix covers proposal apply, ordinary create/reassignment, availability reduction, and leave approval; it passed five consecutive runs and every conflict allowed only one incompatible mutation to commit.
 - Delivery state: local branch only; not pushed, merged, or deployed.
 
+## Phase 9 — Reproducible competition demo evidence (complete locally)
+
+- Implemented: a self-cleaning, synthetic PostgreSQL scenario for incident creation, deterministic eligibility, proposal creation, Manager approval, atomic apply, audit verification, and backend-derived before/after staffing-gap evidence.
+- Evidence boundary: the command explicitly records deterministic explanation mode and `amdRuntimeEvidence: false`; it cannot satisfy the AMD, browser, deployment, or production gates.
+- Verified locally: the PostgreSQL scenario completed with one eligible and one role-blocked candidate, reduced unfilled shifts from 1 to 0, reached `APPLIED`, produced all four expected audit actions, and removed its synthetic records.
+
 ## Later work (not authorized)
 
 - Execute and record a real AMD Token Factory inference run once credentials and an exact model ID are available.

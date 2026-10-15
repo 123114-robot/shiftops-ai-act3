@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "amd:verify": "tsx scripts/verify-amd-token-factory.ts",
+    "demo:verify": "tsx scripts/verify-demo-scenario.ts",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "db:generate": "prisma generate",

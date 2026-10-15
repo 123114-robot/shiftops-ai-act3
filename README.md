@@ -55,6 +55,8 @@ For the complete preserved application, start PostgreSQL with `docker compose up
 
 ## Verification
 
+With PostgreSQL available and `DATABASE_URL` set, `npm run demo:verify` executes a self-cleaning synthetic manufacturing staffing scenario and prints machine-readable evidence for the incident-to-audit workflow and its before/after unfilled-shift metric. Set `DEMO_EVIDENCE_FILE` to write the record with exclusive-create semantics. This deterministic local evidence is deliberately not labelled as AMD runtime evidence.
+
 ```powershell
 npm run lint
 npm run typecheck
