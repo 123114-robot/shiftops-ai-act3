@@ -20,7 +20,7 @@ Last verified: 2026-10-13 (Australia/Sydney). This checklist separates repositor
 
 - [ ] Approved AMD infrastructure or hardware identified
 - [ ] Open model and serving software identified
-- [ ] `AI_MODE=remote`, `AI_BASE_URL`, `AI_API_KEY`, and `AI_MODEL` configured outside Git
+- [ ] `AI_MODE=remote`, `AI_PROVIDER=amd-token-factory`, official `AI_BASE_URL`, `AI_API_KEY`, and exact `AI_MODEL` configured outside Git
 - [ ] A real proposal explanation request completed through the AMD-hosted endpoint
 - [ ] Sanitized evidence records UTC timestamp, endpoint host (no path/query/secrets), model, server, AMD environment, latency, request ID if available, and outcome
 - [ ] Demo visibly exercises that same AMD-backed path

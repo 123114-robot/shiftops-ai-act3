@@ -52,7 +52,11 @@ Phase 2 adds isolated tables and `/api/shiftops` endpoints, but changes no exist
 
 `ShiftOpsProposalService` rejects ineligible candidates before requesting an explanation. The explanation provider receives only the selected employee ID, shift ID, deterministic score, and validated reasons. Deterministic mode formats those facts locally.
 
-Remote mode uses the standard OpenAI-compatible `POST /chat/completions` contract through Node's built-in `fetch`. It requests structured JSON with `employeeId`, `reasonCodes`, and `explanation`, applies a timeout, checks the returned ID and requires the reason-code set to exactly match the validated input, limits output length, and falls back deterministically on any provider or validation failure. Provider output is stored as explanation text only; it cannot modify eligibility, approval state, or database mutations.
+Remote mode uses the standard OpenAI-compatible `POST /chat/completions` contract through Node's built-in `fetch`. It requests structured JSON with `employeeId`, `reasonCodes`, and a constrained rendering `style`, applies a timeout, checks the returned ID and model, requires the reason-code set to exactly match the validated input, limits output length, and falls back deterministically on any provider or validation failure. Provider output selects only the local rendering style; it cannot add explanation claims, modify eligibility, approve a proposal, or mutate the database.
+
+## Phase 7 AMD Token Factory adapter
+
+`AI_PROVIDER=amd-token-factory` reuses the Phase 3 pathway with AMD Radeon Cloud Token Factory's official shared OpenAI-compatible URL. The adapter omits the undocumented `response_format` option, requires the returned model to equal the configured model, captures only sanitized provenance, and visibly labels AMD, deterministic fallback, deterministic, and mocked-test outcomes. The live verification command uses synthetic facts and creates a non-secret evidence record only after strict grounding succeeds. This architecture does not itself prove a real AMD request; runtime evidence remains a separate gate.
 
 ## Phase 4 Manager UI
 

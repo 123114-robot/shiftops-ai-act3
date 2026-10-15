@@ -1,6 +1,6 @@
 # ShiftOps AI
 
-ShiftOps AI is a human-approved workforce scheduling assistant built on the existing ShiftFlow application. Phase 4 adds a minimal Manager UI for the incident-to-audit demo while preserving backend-owned eligibility, approval, and schedule mutation.
+ShiftOps AI is a human-approved workforce scheduling assistant built on the existing ShiftFlow application. It includes a minimal Manager UI for the incident-to-audit demo while preserving backend-owned eligibility, approval, and schedule mutation.
 
 ## Source and status
 
@@ -8,7 +8,7 @@ ShiftOps AI is a human-approved workforce scheduling assistant built on the exis
 - Team: Synqvera Labs
 - Source snapshot: `123114-robot/ShiftFlow`, commit `6ea907b742c547bd8e8941e64afddf089daf733f`
 - Source branch at snapshot: `codex/phase-9-basic-dashboard`
-- Current delivery state: Phase 4 minimal Manager UI; AMD inference not yet verified and project not submission-ready
+- Current delivery state: Phase 7 AMD Token Factory adapter implemented; live AMD inference remains unverified until a real request succeeds
 
 The source snapshot uses React, TypeScript, Vite, Express, Prisma, PostgreSQL, Vitest, Supertest, and GitHub Actions. Its existing authentication, RBAC, scheduling rules, leave, roster, and dashboard logic are preserved.
 
@@ -51,7 +51,7 @@ For the complete preserved application, start PostgreSQL with `docker compose up
 
 ## Environment contract
 
-`AI_MODE=deterministic` uses only validated facts and requires no provider. `AI_MODE=remote` calls `${AI_BASE_URL}/chat/completions` with `AI_API_KEY`, `AI_MODEL`, and `AI_TIMEOUT_SECONDS`. Configuration stays server-side. Remote output must return JSON containing the same `employeeId` and exact validated `reasonCodes`; invalid, mismatched, empty, oversized, failed, or timed-out responses fall back deterministically. No paid API was called, and the AMD path remains **NOT TESTED** until a real approved endpoint is exercised.
+`AI_MODE=deterministic` uses only validated facts and requires no provider. `AI_MODE=remote` calls `${AI_BASE_URL}/chat/completions` with server-side credentials. Set `AI_PROVIDER=amd-token-factory` to use the fixed official Token Factory shared endpoint contract. Remote output must return JSON containing the same `employeeId` and exact validated `reasonCodes`, and its response model must match `AI_MODEL`; invalid, mismatched, empty, oversized, failed, or timed-out responses fall back deterministically. Explanations are labelled as AMD, deterministic fallback, deterministic, or mocked test output. See `docs/AMD_TOKEN_FACTORY.md` for configuration and the live evidence command. The AMD path remains **UNVERIFIED** until that command succeeds with a real key and model.
 
 ## Verification
 

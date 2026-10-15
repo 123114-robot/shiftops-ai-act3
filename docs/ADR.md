@@ -82,3 +82,11 @@
 - Status: Accepted, 2026-10-13
 - Decision: Remote providers may return only employee ID, the exact reason-code set and a constrained style. User-visible explanation text is rendered locally from trusted reason-code labels.
 - Rationale: free text could introduce unsupported scheduling claims even when IDs and reason codes matched.
+
+## ADR-012 — AMD Token Factory through the existing grounded adapter
+
+- Status: Accepted, 2026-10-14
+- Decision: identify AMD explicitly with `AI_PROVIDER=amd-token-factory`, use the official shared Token Factory base URL, and reuse the existing OpenAI-compatible and grounded-rendering pipeline.
+- Provenance: require the response model to match `AI_MODEL`; locally label AMD success, deterministic fallback, deterministic-only mode, and explicit mocks; log only sanitized model/request/latency metadata.
+- Compatibility: no API, database, scheduling, approval, or transaction boundary changes. Generic OpenAI-compatible remote mode remains available but cannot satisfy the AMD readiness gate.
+- Evidence boundary: implementation and mock tests do not prove AMD execution. Only a successful real verification command plus human-reviewed platform evidence may mark AMD runtime as verified.
