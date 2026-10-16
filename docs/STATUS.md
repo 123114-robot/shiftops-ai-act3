@@ -2,6 +2,30 @@
 
 Last updated: 2026-10-16 (Australia/Sydney)
 
+## Render deployment preparation
+
+- Branch: `chore/render-demo-deployment`, based on UI/UX commit `1c2326a`.
+- Prepared only: Render Static Site + Oregon Free Node Web Service configuration that reuses the existing Oregon Free PostgreSQL database, production `PORT` binding, health check, Prisma migration baseline, guarded additive synthetic Demo Seed and deployment/UAT instructions.
+- Free-plan initialization: the Web Service Start Command runs `db:deploy`, then `db:seed:demo`, then starts Express. The Blueprint contains no database resource and cannot request a duplicate database.
+- AI remains deterministic; no live AMD inference, Render service or public URL is claimed.
+- Deployment requires the owner to paste the existing database's Internal Database URL and follow the dashboard steps in `docs/RENDER_DEPLOYMENT.md`.
+- Validation: PASS for deployment configuration tests 3/3, PostgreSQL-enabled backend 95/95, frontend 23/23, readiness 5/5, lint, typecheck, production build and `git diff --check`.
+- Disposable database rehearsal: PASS for initial `prisma migrate deploy`, two consecutive idempotent Demo Seed runs, exactly one stable Demo Shift and Demo Leave, followed by verified temporary-database removal.
+- Production start rehearsal: PASS with the built API bound through `PORT=3101` on `0.0.0.0`; `/api/health` returned HTTP 200-equivalent JSON locally.
+
+## UI/UX redesign (local feature branch)
+
+- Branch: `feature/shiftops-ui-ux-redesign`, based on verified integration commit `5360ce5`.
+- Implemented: persistent system-default light/dark theme, semantic design tokens, role-aware sidebar/header, shared layout and feedback components.
+- Employee management: responsive list/detail layouts, explicit edit states, confirmed deactivation and record-preserving reactivation through the existing Manager-only PATCH contract.
+- Weekly roster: Manager Day/Week/Month/Custom ranges, range validation, presets and period navigation using the existing shift range API; employee weekly API remains unchanged.
+- Shift management: visibly separate create/edit modes and confirmed saved-shift cancellation.
+- Dashboard, availability, leave and ShiftOps Copilot use the shared shell without changing business logic, API contracts or AMD provider behavior.
+- Automated validation and manual UAT status are recorded below and in `docs/UI_UX_UAT_CHECKLIST.md`. Owner UAT is not yet claimed.
+- UI/UX feature validation: PASS for lint, typecheck, production build, readiness 5/5, PostgreSQL-enabled backend 95/95, frontend 23/23 and `git diff --check`.
+- `npm run db:generate`: BLOCKED by a Windows file lock from the already-running local backend; the existing generated client remained usable for all 95 PostgreSQL-enabled backend tests and the production build.
+- Limited authenticated browser check: PASS for Manager login, Dashboard, theme toggle/persistence across navigation, narrow employee cards and Weekly Roster controls/empty state. Wide-screen browser review, mutation workflows and owner UAT remain pending. See `docs/UI_UX_BROWSER_EVIDENCE.md`.
+
 ## Current state
 
 - Phase: 10 complete within its local evidence boundary; final repository documentation cleanup in progress

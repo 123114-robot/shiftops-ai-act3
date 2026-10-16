@@ -1,64 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { deactivateEmployee, getEmployee, updateEmployee, type Employee } from '../api/employees';
+import { deactivateEmployee, getEmployee, reactivateEmployee, updateEmployee, type Employee } from '../api/employees';
+import { AppLayout } from '../components/AppLayout';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { StatusBadge } from '../components/StatusBadge';
 import { useAuth } from '../features/auth/auth-context';
 import { EmployeeEditForm } from '../features/employees/EmployeeEditForm';
 import { EmployeeProfile } from '../features/employees/EmployeeProfile';
-
-type EditableEmployee = Pick<Employee, 'firstName' | 'lastName' | 'email' | 'phone' | 'jobTitle'>;
-
-export function EmployeeDetailPage() {
-  const { id = '' } = useParams();
-  const { token } = useAuth();
-  const [employee, setEmployee] = useState<Employee | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (token) void getEmployee(token, id).then(setEmployee).catch((caught: Error) => setError(caught.message));
-  }, [id, token]);
-
-  async function save(input: EditableEmployee) {
-    if (!token) return;
-    try {
-      setError('');
-      setEmployee(await updateEmployee(token, id, input));
-      setEditing(false);
-      setMessage('Employee updated successfully.');
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Unable to update employee.');
-    }
-  }
-
-  async function deactivate() {
-    if (!token) return;
-    try {
-      setError('');
-      setEmployee(await deactivateEmployee(token, id));
-      setMessage('Employee deactivated successfully.');
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Unable to deactivate employee.');
-    }
-  }
-
-  if (error && !employee) return <main className="dashboard-shell"><section className="dashboard-card"><p role="alert">{error}</p><Link to="/employees">Back to employees</Link></section></main>;
-  if (!employee) return <main className="loading-screen">Loading employee…</main>;
-
-  return (
-    <main className="dashboard-shell">
-      <nav><strong>ShiftFlow</strong><Link to="/employees">Back to employees</Link></nav>
-      <section className="dashboard-card employee-detail">
-        <header><p className="eyebrow">Employee profile</p><h1>{employee.firstName} {employee.lastName}</h1><span className={`badge badge--${employee.status.toLowerCase()}`}>{employee.status}</span></header>
-        {message && <p role="status">{message}</p>}
-        {error && <p role="alert">{error}</p>}
-        {editing ? <EmployeeEditForm employee={employee} onSave={save} /> : <EmployeeProfile employee={employee} />}
-        <div className="detail-actions">
-          <Link className="secondary button-link" to={`/employees/${id}/availability`}>View availability</Link>
-          <button className="secondary" onClick={() => { setEditing((value) => !value); setMessage(''); }}>{editing ? 'Cancel' : 'Edit employee'}</button>
-          {employee.status === 'ACTIVE' && !editing && <button className="secondary danger" onClick={() => void deactivate()}>Deactivate employee</button>}
-        </div>
-      </section>
-    </main>
-  );
-}
+type EditableEmployee = Pick<Employee, 'firstName'|'lastName'|'email'|'phone'|'jobTitle'>;
+export function EmployeeDetailPage(){const{id=''}=useParams();const{token}=useAuth();const[employee,setEmployee]=useState<Employee|null>(null);const[editing,setEditing]=useState(false);const[confirming,setConfirming]=useState(false);const[busy,setBusy]=useState(false);const[message,setMessage]=useState('');const[error,setError]=useState('');
+useEffect(()=>{if(token)void getEmployee(token,id).then(setEmployee).catch((caught:Error)=>setError(caught.message));},[id,token]);
+async function save(input:EditableEmployee){if(!token)return;setBusy(true);try{setError('');setEmployee(await updateEmployee(token,id,input));setEditing(false);setMessage('Employee updated successfully.');}catch(caught){setError(caught instanceof Error?caught.message:'Unable to update employee.');}finally{setBusy(false);}}
+async function deactivate(){if(!token)return;setBusy(true);try{setEmployee(await deactivateEmployee(token,id));setMessage('Employee deactivated successfully.');setError('');setConfirming(false);}catch(caught){setError(caught instanceof Error?caught.message:'Unable to deactivate employee.');}finally{setBusy(false);}}
+async function reactivate(){if(!token)return;setBusy(true);try{setEmployee(await reactivateEmployee(token,id));setMessage('Employee reactivated successfully.');setError('');}catch(caught){setError(caught instanceof Error?caught.message:'Unable to reactivate employee.');}finally{setBusy(false);}}
+if(error&&!employee)return <AppLayout title="Employee unavailable" backTo="/employees" backLabel="Employees"><p role="alert">{error}</p></AppLayout>;if(!employee)return <main className="loading-screen">Loading employee…</main>;
+return <AppLayout title={`${employee.firstName} ${employee.lastName}`} eyebrow="Employee profile" backTo="/employees" backLabel="Employees"><section className="card employee-detail"><div className="section-heading"><div><h2>{editing?'Editing Employee':'Employee information'}</h2><p className="muted">Contact details and workforce status.</p></div><StatusBadge status={employee.status}/></div>{message&&<p role="status">{message}</p>}{error&&<p role="alert">{error}</p>}{editing?<EmployeeEditForm employee={employee} onSave={save} onCancel={()=>setEditing(false)}/>:<EmployeeProfile employee={employee}/>} {!editing&&<div className="detail-actions"><Link className="button button--secondary" to={`/employees/${id}/availability`}>View Availability</Link><button className="button button--secondary" onClick={()=>{setEditing(true);setMessage('');}}>Edit Employee</button>{employee.status==='ACTIVE'?<button className="button button--danger" disabled={busy} onClick={()=>setConfirming(true)}>Deactivate Employee</button>:<button disabled={busy} onClick={()=>void reactivate()}>Reactivate Employee</button>}</div>}</section>{confirming&&<ConfirmationDialog title="Deactivate this employee?" description="This employee will no longer be eligible for future shift assignments." confirmLabel="Confirm Deactivation" busy={busy} onCancel={()=>setConfirming(false)} onConfirm={()=>void deactivate()}/>}</AppLayout>}

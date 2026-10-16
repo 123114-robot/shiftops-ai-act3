@@ -51,3 +51,9 @@ export async function deactivateEmployee(token: string, id: string) {
     method: 'DELETE',
   })).employee;
 }
+
+export async function reactivateEmployee(token: string, id: string) {
+  return (await employeeRequest<{ employee: Employee }>(`/employees/${id}`, token, {
+    method: 'PATCH', body: JSON.stringify({ status: 'ACTIVE' }),
+  })).employee;
+}
