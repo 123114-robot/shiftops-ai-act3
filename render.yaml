@@ -17,18 +17,14 @@ services:
     runtime: node
     name: shiftops-ai-api
     plan: free
-    region: singapore
+    region: oregon
     buildCommand: npm ci && npm run db:generate && npm run build -w backend
-    preDeployCommand: npm run db:deploy -w backend
-    startCommand: npm run start -w backend
-    initialDeployHook: npm run db:seed:demo -w backend
+    startCommand: npm run db:deploy -w backend && npm run db:seed:demo -w backend && npm run start -w backend
     healthCheckPath: /api/health
     autoDeployTrigger: 'off'
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: shiftops-ai-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: FRONTEND_URL
@@ -45,11 +41,3 @@ services:
         value: '2400'
       - key: SHIFTOPS_REQUIRE_ROLE_MATCH
         value: 'true'
-
-databases:
-  - name: shiftops-ai-db
-    plan: free
-    region: singapore
-    databaseName: shiftops_ai
-    user: shiftops_ai
-    ipAllowList: []

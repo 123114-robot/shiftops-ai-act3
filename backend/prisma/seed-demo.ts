@@ -10,6 +10,7 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 const demoShiftId = 'demo-shift-incident';
+const demoLeaveId = 'demo-leave-request';
 const demoShiftMarker = '[DEMO] Incident workflow shift';
 
 function dateOnly(daysFromToday: number) {
@@ -25,12 +26,12 @@ async function upsertEmployee(
 ) {
   const user = await prisma.user.upsert({
     where: { email: input.email },
-    update: { passwordHash, role: UserRole.EMPLOYEE },
+    update: {},
     create: { email: input.email, passwordHash, role: UserRole.EMPLOYEE },
   });
   return prisma.employee.upsert({
     where: { email: input.email },
-    update: { ...input, status: EmployeeStatus.ACTIVE, userId: user.id },
+    update: {},
     create: { ...input, status: EmployeeStatus.ACTIVE, userId: user.id },
   });
 }
@@ -47,7 +48,7 @@ async function main() {
   const passwordHash = await bcrypt.hash(demoPassword, 12);
   const manager = await prisma.user.upsert({
     where: { email: 'manager@shiftflow.local' },
-    update: { passwordHash, role: UserRole.MANAGER },
+    update: {},
     create: { email: 'manager@shiftflow.local', passwordHash, role: UserRole.MANAGER },
   });
 
@@ -63,42 +64,41 @@ async function main() {
     for (const dayOfWeek of days) {
       await prisma.availability.upsert({
         where: { employeeId_dayOfWeek: { employeeId: employee.id, dayOfWeek } },
-        update: { startTime: '08:00', endTime: '20:00', isAvailable: true },
+        update: {},
         create: { employeeId: employee.id, dayOfWeek, startTime: '08:00', endTime: '20:00', isAvailable: true },
       });
     }
   }
 
-  const demoShift = await prisma.shift.findUnique({ where: { id: demoShiftId } });
-  if (!demoShift) {
-    await prisma.shift.create({
-      data: {
-        id: demoShiftId,
-        employeeId: barry.id,
-        date: dateOnly(0),
-        startTime: '10:00',
-        endTime: '18:00',
-        role: 'Chef',
-        notes: demoShiftMarker,
-        status: ShiftStatus.SCHEDULED,
-        createdById: manager.id,
-      },
-    });
-  }
+  await prisma.shift.upsert({
+    where: { id: demoShiftId },
+    update: {},
+    create: {
+      id: demoShiftId,
+      employeeId: barry.id,
+      date: dateOnly(0),
+      startTime: '10:00',
+      endTime: '18:00',
+      role: 'Chef',
+      notes: demoShiftMarker,
+      status: ShiftStatus.SCHEDULED,
+      createdById: manager.id,
+    },
+  });
 
   const leaveMarker = '[DEMO] Personal leave';
-  const existingLeave = await prisma.leaveRequest.findFirst({ where: { employeeId: james.id, reason: leaveMarker } });
-  if (!existingLeave) {
-    await prisma.leaveRequest.create({
-      data: {
-        employeeId: james.id,
-        startDate: dateOnly(5),
-        endDate: dateOnly(6),
-        reason: leaveMarker,
-        status: LeaveStatus.PENDING,
-      },
-    });
-  }
+  await prisma.leaveRequest.upsert({
+    where: { id: demoLeaveId },
+    update: {},
+    create: {
+      id: demoLeaveId,
+      employeeId: james.id,
+      startDate: dateOnly(5),
+      endDate: dateOnly(6),
+      reason: leaveMarker,
+      status: LeaveStatus.PENDING,
+    },
+  });
 
   console.info('Synthetic ShiftOps demo data is ready. No existing records were deleted.');
 }
