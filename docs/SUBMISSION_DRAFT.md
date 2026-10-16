@@ -2,7 +2,7 @@
 
 Status: DRAFT — do not submit until every bracketed field and evidence gate is resolved.
 
-Repository snapshot: Phases 0–10 are merged in integration commit `e6bae759476ce9340f27957c20eff1f4937befab`; GitHub Actions run `38827402353` passed. This is repository evidence only, not proof of live AMD inference, deployment, or submission.
+Repository snapshot: Phases 0–10, UI/UX redesign and Render build remediation are present on `feature/shiftops-ui-ux-redesign` at commit `7edfe2183d0502f55a343056f3d34c45bbe3b716`. The owner confirms the public Render application is live. This is not proof of final submission or public end-to-end UAT.
 
 Submission deadline: **18 October 2026, 9:00 PM AEDT**, sourced from the user's authenticated lablab.ai event page screenshot. Codex did not independently inspect that authenticated screenshot.
 
@@ -33,7 +33,7 @@ The language model is deliberately non-authoritative. It receives only validated
 - Express, Prisma, PostgreSQL
 - Deterministic eligibility engine and auditable approval state machine
 - OpenAI-compatible grounded explanation adapter
-- AMD runtime: `[UNVERIFIED — add actual AMD infrastructure, model, server, and measured evidence]`
+- AMD runtime evidence: one verified grounded Token Factory request; configured model `MiniCPM5-2B`, returned identifier `self-dploy/MiniCPM5-2B`, 3305 ms, no fallback. The public Render demo remains deterministic and must be described separately.
 - Evolus: `[NOT SELECTED unless the partner gate is completed]`
 
 ## Challenge and links

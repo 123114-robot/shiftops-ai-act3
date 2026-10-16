@@ -2,7 +2,13 @@
 
 Date: 2026-10-16 (Australia/Sydney)
 
-Status: deployment configuration prepared and locally verified. The existing Render PostgreSQL resource is preserved; Codex has not created or deployed any Render service.
+Status: **DEPLOYED — OWNER CONFIRMED** on 2026-10-16 from commit `7edfe2183d0502f55a343056f3d34c45bbe3b716`. The owner reports the public frontend and backend are live and the health endpoint returns `status: ok`. This repository records that report; no authenticated Render dashboard screenshot is committed.
+
+- Public application: `https://shiftops-ai-web.onrender.com`
+- Public API: `https://shiftops-ai-api.onrender.com`
+- Health endpoint: `https://shiftops-ai-api.onrender.com/api/health`
+- Database: existing `shiftops-ai-db`, Oregon Free
+- Public AI mode: deterministic
 
 ## Existing resources and topology
 

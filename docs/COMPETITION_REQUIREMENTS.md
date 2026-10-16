@@ -10,8 +10,9 @@ Public sources accessed: 2026-10-13. Repository and user-supplied deadline evide
 | Eligible tracks | VERIFIED | Four main challenge areas are published; Google and Evolus are optional partner technologies. Final ShiftOps track selection is not yet recorded. |
 | Pre-existing code reuse | UNVERIFIED | Public page says submissions must be original and MIT-compliant, but the accessible rulebook did not expose detailed reuse timing/attribution rules. Preserve source provenance and confirm in authenticated rules/Discord. |
 | AMD requirement | VERIFIED | A meaningful workload must run on approved AMD infrastructure/hardware and be part of the working product shown to judges. |
-| AMD inference details | BLOCKED | No cloud allocation, credential, selected open model, vLLM endpoint, or measured inference evidence is available. |
+| AMD inference details | PARTIAL / VERIFIED REQUEST | One real grounded Token Factory request is recorded in `docs/evidence/amd-token-factory-verified-2026-10-16.json`: configured `MiniCPM5-2B`, returned `self-dploy/MiniCPM5-2B`, 3305 ms, no fallback. Account enrollment/general AMD hardware compliance and AMD execution in the public deterministic demo remain unverified. |
 | Working demo | VERIFIED | A working prototype and application URL/platform are listed submission items. |
+| Public deployment | OWNER-CONFIRMED | Frontend `https://shiftops-ai-web.onrender.com`, API `https://shiftops-ai-api.onrender.com`, and health endpoint were reported live from commit `7edfe2183d0502f55a343056f3d34c45bbe3b716`. Full public workflow UAT is still pending. |
 | Public repository | VERIFIED | Public GitHub is required; `123114-robot/shiftops-ai-act3` was verified public on 2026-10-13. |
 | Video | VERIFIED | Video presentation is required; current general guidance says no more than 5 minutes. Event-specific upload constraints should be reconfirmed at submission. |
 | Slides | VERIFIED | Slide presentation is required. |

@@ -10,7 +10,7 @@ Last verified: 2026-10-16 (Australia/Sydney). This checklist separates repositor
 - [ ] Confirm team enrollment and AMD AI Developer Program approval in the authenticated event portal
 - [ ] Record the selected main challenge in the submission
 - [x] Record the authenticated submission cutoff as **18 October 2026, 9:00 PM AEDT**, sourced from the user's authenticated lablab.ai event page screenshot; Codex did not independently inspect the screenshot
-- [ ] Provide a publicly reachable application URL
+- [x] Record owner-confirmed public application URL: `https://shiftops-ai-web.onrender.com`
 - [ ] Record a demo video; general lablab guidance says no more than five minutes
 - [ ] Export the pitch deck as PDF
 - [ ] Add a cover image
@@ -19,10 +19,10 @@ Last verified: 2026-10-16 (Australia/Sydney). This checklist separates repositor
 ## AMD evidence gate
 
 - [ ] Approved AMD infrastructure or hardware identified
-- [ ] Open model and serving software identified
+- [x] Record configured model `MiniCPM5-2B` and provider-returned identifier `self-dploy/MiniCPM5-2B`
 - [ ] `AI_MODE=remote`, `AI_PROVIDER=amd-token-factory`, official `AI_BASE_URL`, `AI_API_KEY`, and exact `AI_MODEL` configured outside Git
-- [ ] A real proposal explanation request completed through the AMD-hosted endpoint
-- [ ] Sanitized evidence records UTC timestamp, endpoint host (no path/query/secrets), model, server, AMD environment, latency, request ID if available, and outcome
+- [x] One real synthetic grounded explanation request completed through AMD Token Factory without deterministic fallback
+- [x] Committed sanitized evidence records UTC timestamp, endpoint host, configured/returned model, latency, grounding result and fallback status: `docs/evidence/amd-token-factory-verified-2026-10-16.json`
 - [ ] Demo visibly exercises that same AMD-backed path
 
 Environment variables alone are configuration evidence, not runtime evidence. Mock tests and deterministic fallback do not satisfy the AMD gate.

@@ -1,14 +1,15 @@
 # Project Status
 
-Last updated: 2026-10-16 (Australia/Sydney)
+Last updated: 2026-10-17 (Australia/Sydney)
 
-## Render deployment preparation
+## Render deployment
 
 - Branch: deployment preparation is integrated into `feature/shiftops-ui-ux-redesign`, based on UI/UX commit `1c2326a`.
-- Prepared only: Render Static Site + Oregon Free Node Web Service configuration that reuses the existing Oregon Free PostgreSQL database, production `PORT` binding, health check, Prisma migration baseline, guarded additive synthetic Demo Seed and deployment/UAT instructions.
+- Deployment: **OWNER-CONFIRMED LIVE** at `https://shiftops-ai-web.onrender.com`; API `https://shiftops-ai-api.onrender.com`; deployed source commit `7edfe2183d0502f55a343056f3d34c45bbe3b716`.
+- Deployed configuration: Render Static Site + Oregon Free Node Web Service reusing the existing Oregon Free PostgreSQL database, production `PORT` binding, health check, Prisma migration baseline and guarded additive synthetic Demo Seed.
 - Free-plan initialization: the Web Service Start Command runs `db:deploy`, then `db:seed:demo`, then starts Express. The Blueprint contains no database resource and cannot request a duplicate database.
 - Production build fix: the backend Build Command uses `npm ci --include=dev` so strict TypeScript declarations and Prisma tooling remain available under `NODE_ENV=production`, with Render pinned to tested Node.js LTS `24.22.0`.
-- AI remains deterministic; no live AMD inference, Render service or public URL is claimed.
+- The public Render demo remains deterministic. Separately, one bounded real AMD Token Factory request is verified by `docs/evidence/amd-token-factory-verified-2026-10-16.json`; this is not evidence that Render uses remote AMD mode.
 - Deployment requires the owner to paste the existing database's Internal Database URL and follow the dashboard steps in `docs/RENDER_DEPLOYMENT.md`.
 - Validation: PASS for deployment configuration tests 3/3, PostgreSQL-enabled backend 95/95, frontend 23/23, readiness 5/5, lint, typecheck, production build and `git diff --check`.
 - Disposable database rehearsal: PASS for initial `prisma migrate deploy`, two consecutive idempotent Demo Seed runs, exactly one stable Demo Shift and Demo Leave, followed by verified temporary-database removal.
@@ -40,7 +41,7 @@ Last updated: 2026-10-16 (Australia/Sydney)
 - Implemented and merged in Phase 9: a self-cleaning synthetic PostgreSQL evidence command that verifies the full incident-to-audit workflow and measures the backend-derived unfilled-shift delta without claiming AMD execution
 - Verified and merged in Phase 10: the rendered Manager UI completes login, shift creation, candidate evaluation, proposal creation, explicit approval, apply, and audit display against the real local API and PostgreSQL database
 - Latest verified remote integration: default branch `feature/phase-0-foundation`, commit `e6bae759476ce9340f27957c20eff1f4937befab`; GitHub Actions run `38827402353` completed successfully with PostgreSQL
-- Not verified: successful live AMD request (credentials/model unavailable), AMD account/hardware evidence, Evolus, deployment, video, deck, or portal submission
+- Verified separately: one successful grounded AMD Token Factory request using configured model `MiniCPM5-2B`, returned model `self-dploy/MiniCPM5-2B`, without fallback. Not verified: AMD account enrollment/general hardware compliance, AMD execution in the public Render demo, Evolus, final public workflow UAT, video, deck, cover image, or portal submission.
 
 ## Validation
 
@@ -94,8 +95,8 @@ See `docs/OPEN_ISSUES_HANDOFF.md` for the issue-by-issue handoff, evidence requi
 
 - User registration, ADP approval, team enrollment, and event workspace access cannot be verified from public pages.
 - Submission deadline: **18 October 2026, 9:00 PM AEDT**, sourced from the user's authenticated lablab.ai event page screenshot. Codex did not independently inspect that authenticated screenshot; enrollment and portal state remain unverified.
-- AMD Developer Cloud allocation, credentials, model endpoint, and inference evidence are unavailable locally.
-- AMD Token Factory adapter status: IMPLEMENTED BUT NOT TESTED against the live service; mocked responses are not compliance evidence.
+- AMD Token Factory adapter status: one real synthetic-only request is VERIFIED by the committed sanitized evidence file. Credentials remain secret and unavailable in the repository, as required.
+- AMD competition compliance remains PARTIAL until the owner confirms enrollment/infrastructure eligibility and the final presentation accurately distinguishes the verified request from the deterministic public demo.
 - Evolus event code/workspace, API key, and connected AMD vLLM endpoint are unavailable locally.
 - Track selection remains open; Evolus is optional for the main event but mandatory for its partner prize.
 - GitHub detects no license for this repository or its ShiftFlow source; ownership and MIT-compatibility must be resolved before submission.

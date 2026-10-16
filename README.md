@@ -35,7 +35,7 @@ The backend remains authoritative for eligibility, authorization, state transiti
 
 The AMD Token Factory adapter is implemented against the documented shared endpoint contract. It validates response shape, candidate identity, exact reason codes, returned model identity, output size, timeout, and provenance before accepting an explanation. Invalid or unavailable remote output falls back deterministically.
 
-**Live AMD inference remains UNVERIFIED.** No successful real Token Factory request, model allocation, account runtime, or AMD hardware evidence has been recorded. Mocked adapter tests and green CI are not live AMD evidence. See [docs/AMD_TOKEN_FACTORY.md](docs/AMD_TOKEN_FACTORY.md).
+One bounded real Token Factory request is **VERIFIED** by the committed sanitized record in `docs/evidence/amd-token-factory-verified-2026-10-16.json`: configured model `MiniCPM5-2B`, provider-returned identifier `self-dploy/MiniCPM5-2B`, grounding passed, 3305 ms latency, and no deterministic fallback. This does not prove general AMD hardware/account compliance or AMD execution in the public Render demo, which remains deterministic. See [docs/AMD_TOKEN_FACTORY.md](docs/AMD_TOKEN_FACTORY.md).
 
 ## Setup
 
@@ -74,7 +74,7 @@ git diff --check
 
 Set `DATABASE_TESTS=true` with a reachable PostgreSQL `DATABASE_URL` to execute the database integration suite. A skipped database test is not a pass.
 
-The latest verified integration commit before this documentation cleanup is `e6bae759476ce9340f27957c20eff1f4937befab`. GitHub Actions run [38827402353](https://github.com/123114-robot/shiftops-ai-act3/actions/runs/38827402353) completed successfully on 16 October 2026 with PostgreSQL-backed CI. Current local and CI evidence is tracked in [docs/STATUS.md](docs/STATUS.md).
+The current delivery branch is `feature/shiftops-ui-ux-redesign`; the owner-confirmed deployed source commit is `7edfe2183d0502f55a343056f3d34c45bbe3b716`. Earlier GitHub Actions run [38827402353](https://github.com/123114-robot/shiftops-ai-act3/actions/runs/38827402353) completed successfully on 16 October 2026 with PostgreSQL-backed CI. Current evidence is tracked in [docs/STATUS.md](docs/STATUS.md).
 
 ## Demo workflow
 
@@ -87,13 +87,15 @@ The latest verified integration commit before this documentation cleanup is `e6b
 
 For a self-cleaning backend scenario, run `npm run demo:verify`. This proves a local deterministic PostgreSQL workflow only; it is not AMD runtime or public deployment evidence. See [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) and [docs/PHASE_10_BROWSER_DEMO_EVIDENCE.md](docs/PHASE_10_BROWSER_DEMO_EVIDENCE.md).
 
+Owner-confirmed public application: `https://shiftops-ai-web.onrender.com`. Recording guidance is in [the storyboard](docs/DEMO_VIDEO_STORYBOARD.md), [English narration](docs/DEMO_VIDEO_NARRATION.md), and [recording checklist](docs/DEMO_RECORDING_CHECKLIST.md).
+
 ## Current limitations
 
-- Live AMD Token Factory execution is unverified because credentials and an exact available model ID have not been supplied.
-- No public deployment or working application URL has been verified.
+- One real Token Factory request is verified, but AMD enrollment/general hardware compliance and AMD use in the public deterministic demo remain unverified.
+- The public deployment is owner-confirmed; formal public end-to-end workflow UAT has not been recorded.
 - Demo video, pitch deck, cover image, and authenticated final submission remain incomplete.
 - Source ownership and authority to apply an MIT license remain blocked pending owner confirmation.
-- The repository uses a development/CI `prisma db push` strategy and does not yet have a reviewed production migration baseline.
+- Local development/CI may use `prisma db push`; Render uses the committed Prisma migration baseline and guarded idempotent demo seed.
 - Remaining dependency advisories and production contention or telemetry evidence require separate work.
 - The optional Evolus partner track has not been selected or implemented.
 
@@ -105,6 +107,6 @@ This provenance record does not prove authorship, ownership, or permission to re
 
 ## Competition state
 
-Phases 0–10 are implemented within their documented boundaries. The project has not yet demonstrated live AMD execution, public deployment, or formal AMD Developer Hackathon ACT III submission. The submission deadline recorded from the user's authenticated lablab.ai event page screenshot is **18 October 2026 at 9:00 PM AEDT**; Codex did not independently access that authenticated screenshot.
+Phases 0–10 and the UI/UX redesign are implemented within their documented boundaries. The owner confirms the public Render deployment, and one bounded real AMD Token Factory request is recorded. Public workflow UAT, submission assets and formal AMD Developer Hackathon ACT III submission remain incomplete. The submission deadline recorded from the user's authenticated lablab.ai event page screenshot is **18 October 2026 at 9:00 PM AEDT**; Codex did not independently access that authenticated screenshot.
 
-See [docs/COMPETITION_REQUIREMENTS.md](docs/COMPETITION_REQUIREMENTS.md), [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md), and [docs/SUBMISSION_DRAFT.md](docs/SUBMISSION_DRAFT.md) before making any public compliance claim.
+See [docs/FINAL_SUBMISSION_STATUS.md](docs/FINAL_SUBMISSION_STATUS.md), [docs/COMPETITION_REQUIREMENTS.md](docs/COMPETITION_REQUIREMENTS.md), [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md), and [docs/SUBMISSION_DRAFT.md](docs/SUBMISSION_DRAFT.md) before making any public compliance claim.

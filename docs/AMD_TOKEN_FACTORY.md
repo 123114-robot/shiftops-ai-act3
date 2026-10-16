@@ -72,4 +72,6 @@ The output contains a timestamp, commit, endpoint host, configured/returned mode
 
 ## Current evidence status
 
-**UNVERIFIED:** as of 2026-10-16, no `AI_API_KEY`, `AI_MODEL`, or successful live Token Factory request was available in the implementation environment. Unit tests use mocked HTTP responses and are not AMD runtime evidence. The adapter and its Phase 7 pull request are merged, but merge and CI status do not prove live AMD execution. Do not mark the readiness gate `VERIFIED` until the command above succeeds with a real key/model and a human reviews the generated record plus Token Factory account/runtime evidence.
+**VERIFIED (one bounded real request):** on 2026-10-16 the strict verification command completed one real grounded Token Factory request using configured model `MiniCPM5-2B`. The provider returned model identifier `self-dploy/MiniCPM5-2B`; grounding validation passed, latency was 3305 ms, and deterministic fallback was not used. The committed sanitized record is `docs/evidence/amd-token-factory-verified-2026-10-16.json`.
+
+This proves one successful synthetic-only Token Factory inference. It does not prove AMD account enrollment, general hardware compliance, production reliability, or that the public Render demo is using remote inference. The public Render demo remains configured with `AI_MODE=deterministic`; its visible explanations must not be described as live AMD output.
