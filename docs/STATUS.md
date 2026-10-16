@@ -2,6 +2,16 @@
 
 Last updated: 2026-10-16 (Australia/Sydney)
 
+## Render deployment preparation
+
+- Branch: `chore/render-demo-deployment`, based on UI/UX commit `1c2326a`.
+- Prepared only: Render Static Site + Node Web Service + PostgreSQL Blueprint, production `PORT` binding, health check, Prisma migration baseline, guarded additive synthetic Demo Seed and deployment/UAT instructions.
+- AI remains deterministic; no live AMD inference, Render service or public URL is claimed.
+- Deployment requires owner review, branch push, Render GitHub authorization and the dashboard steps in `docs/RENDER_DEPLOYMENT.md`.
+- Validation: PASS for deployment configuration tests 3/3, PostgreSQL-enabled backend 95/95, frontend 23/23, readiness 5/5, lint, typecheck, production build and `git diff --check`.
+- Disposable database rehearsal: PASS for initial `prisma migrate deploy`, two consecutive idempotent Demo Seed runs, exactly one stable Demo Shift and Demo Leave, followed by verified temporary-database removal.
+- Production start rehearsal: PASS with the built API bound through `PORT=3101` on `0.0.0.0`; `/api/health` returned HTTP 200-equivalent JSON locally.
+
 ## UI/UX redesign (local feature branch)
 
 - Branch: `feature/shiftops-ui-ux-redesign`, based on verified integration commit `5360ce5`.
