@@ -65,6 +65,12 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 - Evidence boundary: the command explicitly records deterministic explanation mode and `amdRuntimeEvidence: false`; it cannot satisfy the AMD, browser, deployment, or production gates.
 - Verified locally: the PostgreSQL scenario completed with one eligible and one role-blocked candidate, reduced unfilled shifts from 1 to 0, reached `APPLIED`, produced all four expected audit actions, and removed its synthetic records.
 
+## Phase 10 — Local browser demo evidence (complete locally)
+
+- Completed: the rendered Manager UI was exercised against the real local Express API and PostgreSQL database from login through shift creation, incident evaluation, proposal creation, explicit approval, atomic apply, and audit display.
+- Verified: one eligible and two blocked candidates were displayed, the proposal reached `APPLIED`, all four expected audit actions were visible, PostgreSQL recorded `SCHEDULED`/`APPLIED`/`RESOLVED`, and the temporary synthetic records were removed.
+- Evidence boundary: the UI displayed `[Source: deterministic]`; this is not AMD runtime or public-deployment evidence.
+
 ## Later work (not authorized)
 
 - Execute and record a real AMD Token Factory inference run once credentials and an exact model ID are available.
