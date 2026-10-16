@@ -2,6 +2,19 @@
 
 Last updated: 2026-10-16 (Australia/Sydney)
 
+## UI/UX redesign (local feature branch)
+
+- Branch: `feature/shiftops-ui-ux-redesign`, based on verified integration commit `5360ce5`.
+- Implemented: persistent system-default light/dark theme, semantic design tokens, role-aware sidebar/header, shared layout and feedback components.
+- Employee management: responsive list/detail layouts, explicit edit states, confirmed deactivation and record-preserving reactivation through the existing Manager-only PATCH contract.
+- Weekly roster: Manager Day/Week/Month/Custom ranges, range validation, presets and period navigation using the existing shift range API; employee weekly API remains unchanged.
+- Shift management: visibly separate create/edit modes and confirmed saved-shift cancellation.
+- Dashboard, availability, leave and ShiftOps Copilot use the shared shell without changing business logic, API contracts or AMD provider behavior.
+- Automated validation and manual UAT status are recorded below and in `docs/UI_UX_UAT_CHECKLIST.md`. Owner UAT is not yet claimed.
+- UI/UX feature validation: PASS for lint, typecheck, production build, readiness 5/5, PostgreSQL-enabled backend 95/95, frontend 23/23 and `git diff --check`.
+- `npm run db:generate`: BLOCKED by a Windows file lock from the already-running local backend; the existing generated client remained usable for all 95 PostgreSQL-enabled backend tests and the production build.
+- Limited authenticated browser check: PASS for Manager login, Dashboard, theme toggle/persistence across navigation, narrow employee cards and Weekly Roster controls/empty state. Wide-screen browser review, mutation workflows and owner UAT remain pending. See `docs/UI_UX_BROWSER_EVIDENCE.md`.
+
 ## Current state
 
 - Phase: 10 complete within its local evidence boundary; final repository documentation cleanup in progress

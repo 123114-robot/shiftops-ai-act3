@@ -13,6 +13,7 @@ import { MyLeavePage } from './pages/MyLeavePage';
 import { LeaveManagementPage } from './pages/LeaveManagementPage';
 import { RosterPage } from './pages/RosterPage';
 import { ShiftOpsPage } from './pages/ShiftOpsPage';
+import { ThemeProvider } from './features/theme/ThemeProvider';
 
 function HomeRedirect() {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ function HomeRedirect() {
 }
 
 export default function App() {
-  return <BrowserRouter><AuthProvider><Routes>
+  return <ThemeProvider><BrowserRouter><AuthProvider><Routes>
     <Route path="/login" element={<LoginPage />} />
     <Route path="/dashboard" element={<ProtectedRoute roles={['MANAGER']}><DashboardPage /></ProtectedRoute>} />
     <Route path="/shifts" element={<ProtectedRoute roles={['MANAGER']}><ShiftsPage /></ProtectedRoute>} />
@@ -35,5 +36,5 @@ export default function App() {
     <Route path="/my-leave" element={<ProtectedRoute roles={['EMPLOYEE']}><MyLeavePage /></ProtectedRoute>} />
     <Route path="/my-roster" element={<ProtectedRoute roles={['EMPLOYEE']}><RosterPage mine /></ProtectedRoute>} />
     <Route path="*" element={<HomeRedirect />} />
-  </Routes></AuthProvider></BrowserRouter>;
+  </Routes></AuthProvider></BrowserRouter></ThemeProvider>;
 }
