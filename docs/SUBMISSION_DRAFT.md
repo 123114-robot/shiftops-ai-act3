@@ -2,6 +2,10 @@
 
 Status: DRAFT — do not submit until every bracketed field and evidence gate is resolved.
 
+Repository snapshot: Phases 0–10 are merged in integration commit `e6bae759476ce9340f27957c20eff1f4937befab`; GitHub Actions run `38827402353` passed. This is repository evidence only, not proof of live AMD inference, deployment, or submission.
+
+Submission deadline: **18 October 2026, 9:00 PM AEDT**, sourced from the user's authenticated lablab.ai event page screenshot. Codex did not independently inspect that authenticated screenshot.
+
 ## Project title
 
 ShiftOps AI — Human-approved workforce recovery copilot

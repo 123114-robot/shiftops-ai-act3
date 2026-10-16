@@ -1,11 +1,11 @@
 # Competition Requirements Audit
 
-Accessed: 2026-10-13. Primary event source: [AMD Developer Hackathon: ACT III](https://lablab.ai/ai-hackathons/amd-developer-hackathon-act-iii). Live status: [ACT III live page](https://lablab.ai/ai-hackathons/amd-developer-hackathon-act-iii/live). General submission guidance: [lablab.ai AI Hackathons guide](https://lablab.ai/guide/ai-hackathons).
+Public sources accessed: 2026-10-13. Repository and user-supplied deadline evidence reviewed: 2026-10-16. Primary event source: [AMD Developer Hackathon: ACT III](https://lablab.ai/ai-hackathons/amd-developer-hackathon-act-iii). Live status: [ACT III live page](https://lablab.ai/ai-hackathons/amd-developer-hackathon-act-iii/live). General submission guidance: [lablab.ai AI Hackathons guide](https://lablab.ai/guide/ai-hackathons).
 
 | Requirement | Status | Evidence / gap |
 | --- | --- | --- |
 | Registration status | BLOCKED | Account-specific. Public page requires lablab enrollment and AMD AI Developer Program signup/approval; no authenticated account evidence was provided. |
-| Event dates / exact deadline | CONFLICT / UNVERIFIED | Overview says online build is 12–18 Oct 2026; live page says 12–17 Oct and currently shows submissions open. Exact cutoff time/timezone is not published in the accessible text. Confirm inside the authenticated portal/Discord. |
+| Event deadline | USER-CONFIRMED / NOT INDEPENDENTLY INSPECTED | The user's authenticated lablab.ai event page screenshot states **18 October 2026, 9:00 PM AEDT**. Codex did not independently access the authenticated screenshot. Enrollment, team state, and portal access remain unverified. |
 | Team size | VERIFIED | Event page states 1–6 people. |
 | Eligible tracks | VERIFIED | Four main challenge areas are published; Google and Evolus are optional partner technologies. Final ShiftOps track selection is not yet recorded. |
 | Pre-existing code reuse | UNVERIFIED | Public page says submissions must be original and MIT-compliant, but the accessible rulebook did not expose detailed reuse timing/attribution rules. Preserve source provenance and confirm in authenticated rules/Discord. |
