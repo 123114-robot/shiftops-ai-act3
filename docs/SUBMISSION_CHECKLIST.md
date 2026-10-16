@@ -1,6 +1,6 @@
 # Submission Checklist
 
-Last verified: 2026-10-13 (Australia/Sydney). This checklist separates repository readiness from evidence that must come from authenticated services or real runtime execution.
+Last verified: 2026-10-16 (Australia/Sydney). This checklist separates repository readiness from evidence that must come from authenticated services or real runtime execution.
 
 ## Required before submission
 
@@ -9,7 +9,7 @@ Last verified: 2026-10-13 (Australia/Sydney). This checklist separates repositor
 - [x] Working local prototype and automated tests
 - [ ] Confirm team enrollment and AMD AI Developer Program approval in the authenticated event portal
 - [ ] Record the selected main challenge in the submission
-- [ ] Confirm the exact submission cutoff in the authenticated portal or Discord; public overview and live pages currently disagree on whether online build ends 17 or 18 October
+- [x] Record the authenticated submission cutoff as **18 October 2026, 9:00 PM AEDT**, sourced from the user's authenticated lablab.ai event page screenshot; Codex did not independently inspect the screenshot
 - [ ] Provide a publicly reachable application URL
 - [ ] Record a demo video; general lablab guidance says no more than five minutes
 - [ ] Export the pitch deck as PDF

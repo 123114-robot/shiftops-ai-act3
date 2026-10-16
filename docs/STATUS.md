@@ -4,16 +4,17 @@ Last updated: 2026-10-16 (Australia/Sydney)
 
 ## Current state
 
-- Phase: 10 local browser demo evidence
+- Phase: 10 complete within its local evidence boundary; final repository documentation cleanup in progress
 - Source: local ShiftFlow checkout, branch `codex/phase-9-basic-dashboard`, commit `6ea907b`
 - Original checkout: clean and unchanged during this work
-- New repository: isolated, public GitHub repository; working branch `feature/phase-10-browser-demo-evidence`
+- New repository: isolated, public GitHub repository; local cleanup branch `docs/act3-final-repository-cleanup` created from verified integration commit `e6bae759`
 - Implemented: Phases 0–5 plus CI coverage, strict business-time handling, transaction-scoped proposal revalidation, constrained explanations, typed error mapping, reject UI, provenance and audit hardening
 - Implemented in Phase 7: official Token Factory endpoint contract, explicit provider/source labels, response-model provenance validation, sanitized inference trace, and reproducible synthetic evidence command
-- Implemented locally in Phase 8: ordinary shift create/update/reassignment/unassignment/cancel now validate and persist inside the shared employee-lock and Serializable transaction boundary
+- Implemented and merged in Phase 8: ordinary shift create/update/reassignment/unassignment/cancel now validate and persist inside the shared employee-lock and Serializable transaction boundary
 - Remediated after the Phase 8 independent audit: leave review now performs an atomic pending-state transition and maps exhausted serialization conflicts without weakening Manager authorization or schedule-conflict checks
-- Implemented locally in Phase 9: a self-cleaning synthetic PostgreSQL evidence command that verifies the full incident-to-audit workflow and measures the backend-derived unfilled-shift delta without claiming AMD execution
-- Verified locally in Phase 10: the rendered Manager UI completes login, shift creation, candidate evaluation, proposal creation, explicit approval, apply, and audit display against the real local API and PostgreSQL database
+- Implemented and merged in Phase 9: a self-cleaning synthetic PostgreSQL evidence command that verifies the full incident-to-audit workflow and measures the backend-derived unfilled-shift delta without claiming AMD execution
+- Verified and merged in Phase 10: the rendered Manager UI completes login, shift creation, candidate evaluation, proposal creation, explicit approval, apply, and audit display against the real local API and PostgreSQL database
+- Latest verified remote integration: default branch `feature/phase-0-foundation`, commit `e6bae759476ce9340f27957c20eff1f4937befab`; GitHub Actions run `38827402353` completed successfully with PostgreSQL
 - Not verified: successful live AMD request (credentials/model unavailable), AMD account/hardware evidence, Evolus, deployment, video, deck, or portal submission
 
 ## Validation
@@ -57,6 +58,8 @@ Last updated: 2026-10-16 (Australia/Sydney)
 - Phase 10 browser verification: PASS on 2026-10-16; one eligible and two blocked candidates were displayed, the proposal reached `APPLIED`, all four expected audit actions were visible, and the explanation was explicitly labelled deterministic.
 - Phase 10 database cross-check and cleanup: PASS; the shift/proposal/incident reached `SCHEDULED`/`APPLIED`/`RESOLVED`, then exactly four audit events, one proposal, one incident, and one temporary shift were removed, leaving zero rows for the fixture shift.
 - Phase 10 milestone regression: PASS with PostgreSQL enabled for 95/95 backend tests across 25 files with zero skips, 17/17 frontend tests, readiness 5/5, lint, typecheck, production build, and `git diff --check`.
+- Latest merged integration CI: PASS on 2026-10-16 at commit `e6bae759`; run `https://github.com/123114-robot/shiftops-ai-act3/actions/runs/38827402353` completed successfully with the PostgreSQL service enabled.
+- Final repository cleanup validation: PASS for readiness 5/5, lint, typecheck, backend 95/95 with PostgreSQL and zero skips, frontend 17/17, production build, and `git diff --check`. The readiness command correctly remains `BLOCKED` for missing live AMD evidence and submission assets.
 
 Database-backed tests require PostgreSQL and are not evidence of AMD/Evolus access.
 
@@ -65,7 +68,7 @@ Database-backed tests require PostgreSQL and are not evidence of AMD/Evolus acce
 See `docs/OPEN_ISSUES_HANDOFF.md` for the issue-by-issue handoff, evidence requirements, and remaining owner decisions.
 
 - User registration, ADP approval, team enrollment, and event workspace access cannot be verified from public pages.
-- Public pages conflict: overview says online build ends 18 October, while the live page says 17 October. Exact cutoff time/timezone remains unverified.
+- Submission deadline: **18 October 2026, 9:00 PM AEDT**, sourced from the user's authenticated lablab.ai event page screenshot. Codex did not independently inspect that authenticated screenshot; enrollment and portal state remain unverified.
 - AMD Developer Cloud allocation, credentials, model endpoint, and inference evidence are unavailable locally.
 - AMD Token Factory adapter status: IMPLEMENTED BUT NOT TESTED against the live service; mocked responses are not compliance evidence.
 - Evolus event code/workspace, API key, and connected AMD vLLM endpoint are unavailable locally.
@@ -76,4 +79,4 @@ See `docs/OPEN_ISSUES_HANDOFF.md` for the issue-by-issue handoff, evidence requi
 
 ## Phase gate
 
-Complete and stop after the local Phase 10 checkpoint. Do not push, merge, deploy, submit, or begin another phase without explicit approval.
+Complete and stop after the bounded repository documentation cleanup. Do not push, create a PR, rename the default branch, merge, deploy, submit, or begin product development without explicit approval.

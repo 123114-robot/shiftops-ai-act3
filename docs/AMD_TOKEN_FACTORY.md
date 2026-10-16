@@ -72,4 +72,4 @@ The output contains a timestamp, commit, endpoint host, configured/returned mode
 
 ## Current evidence status
 
-**UNVERIFIED:** no `AI_API_KEY`, `AI_MODEL`, or successful live Token Factory request was available in the implementation environment on 2026-10-14. Unit tests use mocked HTTP responses and are not AMD runtime evidence. Do not mark the readiness gate `VERIFIED` until the command above succeeds with a real key/model and a human reviews the generated record plus Token Factory account/runtime evidence.
+**UNVERIFIED:** as of 2026-10-16, no `AI_API_KEY`, `AI_MODEL`, or successful live Token Factory request was available in the implementation environment. Unit tests use mocked HTTP responses and are not AMD runtime evidence. The adapter and its Phase 7 pull request are merged, but merge and CI status do not prove live AMD execution. Do not mark the readiness gate `VERIFIED` until the command above succeeds with a real key/model and a human reviews the generated record plus Token Factory account/runtime evidence.

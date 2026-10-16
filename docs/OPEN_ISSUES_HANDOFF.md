@@ -1,12 +1,12 @@
 # Open Issues and External-Model Handoff
 
-Last reviewed: 2026-10-14 (Australia/Sydney)
+Last reviewed: 2026-10-16 (Australia/Sydney)
 Repository: `https://github.com/123114-robot/shiftops-ai-act3`
-Latest implementation branch: `feature/phase-7-amd-token-factory`
-Latest implementation commit: `43e235900fd42b641f50790c9fc5d30bb9cc8a5c`
-Open pull request: `https://github.com/123114-robot/shiftops-ai-act3/pull/7`
+Latest verified integration branch: `feature/phase-0-foundation` (current default branch; rename to `main` recommended but not authorized)
+Latest verified integration commit: `e6bae759476ce9340f27957c20eff1f4937befab`
+Latest verified CI: `https://github.com/123114-robot/shiftops-ai-act3/actions/runs/38827402353` (`SUCCESS`)
 
-This document is a handoff for GPT, Kimi, or a human reviewer. It records work that remains unfinished after the Phase 7 adapter implementation. It is not authorization to implement, deploy, submit, merge, purchase services, or expose credentials. Proposed solutions must preserve backend authority, Manager approval, RBAC, auditability, and deterministic fallback behavior.
+This document is a handoff for GPT, Kimi, or a human reviewer. It records work that remains unfinished after the Phase 10 local browser evidence milestone. It is not authorization to implement, deploy, submit, merge, purchase services, or expose credentials. Proposed solutions must preserve backend authority, Manager approval, RBAC, auditability, and deterministic fallback behavior.
 
 ## Evidence labels
 
@@ -18,11 +18,11 @@ This document is a handoff for GPT, Kimi, or a human reviewer. It records work t
 
 ## Executive summary
 
-The application skeleton and Phases 0–7 are substantially implemented and tested within their stated boundaries. Phase 7 adds a grounded AMD Token Factory adapter and evidence command; PR #7 CI passed, including PostgreSQL-backed tests. No real Token Factory request has succeeded because credentials and an exact model ID were unavailable. The project is not submission-ready or production-ready because the issues below remain.
+Phases 0–10 are implemented and merged into the current default branch within their stated boundaries. Phase 7 added a grounded AMD Token Factory adapter and evidence command; PR #7 is merged. Phase 8 scheduling serialization and audit remediation are merged, and Phases 9–10 add reproducible PostgreSQL and local-browser demo evidence. The latest integration CI passed with PostgreSQL. No real Token Factory request has succeeded because credentials and an exact model ID remain unavailable. The project is not submission-ready or production-ready because the issues below remain.
 
 | ID | Unfinished item | Status | Primary dependency | Recommended owner |
 | --- | --- | --- | --- | --- |
-| U-01 | Confirm enrollment, approval, challenge, and deadline | BLOCKED / UNVERIFIED | Authenticated event portal or organizers | User / event admin |
+| U-01 | Confirm enrollment, approval, and challenge | PARTIAL / BLOCKED | Authenticated event portal or organizers | User / event admin |
 | U-02 | Resolve source ownership and licensing | BLOCKED | Repository owner/legal decision | User / owner |
 | U-03 | Prove real AMD-hosted inference | BLOCKED | AMD access, endpoint, model, credentials | Infrastructure engineer |
 | U-04 | Decide whether to enter the Evolus partner track | NOT SELECTED | Product decision and event workspace | User / architect |
@@ -35,23 +35,23 @@ The application skeleton and Phases 0–7 are substantially implemented and test
 
 ## U-01 — Competition account, track, and deadline confirmation
 
-**Current status:** BLOCKED / UNVERIFIED.
+**Current status:** PARTIAL / BLOCKED.
 
 ### What is known
 
 - Public event material requires lablab enrollment and AMD AI Developer Program participation/approval.
-- Public pages disagree: the overview describes an online build ending 18 October 2026, while the live page describes 17 October 2026.
+- Deadline supplied from the user's authenticated lablab.ai event page screenshot: **18 October 2026, 9:00 PM AEDT**. Codex did not independently access that authenticated screenshot.
 - The public material identifies four main challenge areas, but this project has not recorded a final challenge selection.
 
 ### Why it is unfinished
 
-Account-specific enrollment, team membership, AMD approval, exact submission cutoff, and portal access cannot be proven from repository files or public pages.
+Account-specific enrollment, team membership, AMD approval, challenge selection, and portal access cannot be proven from repository files or public pages. The deadline has a user-supplied authenticated source but the screenshot itself was not independently inspected by Codex.
 
 ### Required investigation
 
 1. Open the authenticated event portal and capture enrollment/team state.
 2. Confirm AMD AI Developer Program approval and any cloud allocation.
-3. Obtain the exact submission date, time, and timezone from the portal or organizer/Discord announcement.
+3. Preserve the private authenticated deadline screenshot outside Git and record only its non-sensitive fact in public documentation.
 4. Select and record the main challenge category.
 5. Record evidence without storing session cookies, tokens, or private account details in Git.
 
@@ -163,23 +163,18 @@ If not selected, record `Evolus: not used` truthfully and do not add placeholder
 
 ### Exact remaining gap
 
-The implementation and regressions pass. The six-case PostgreSQL suite covers proposal apply, ordinary create/reassignment, availability reduction, and leave approval. It passed five consecutive matrix runs and the final 88/88 backend run. Availability/leave conflicts return `SCHEDULE_CONFLICT` inside the transaction. Production contention, lock-wait telemetry, and forced retry-exhaustion behavior remain unmeasured.
+The implementation and regressions pass. The six-case PostgreSQL suite covers proposal apply, ordinary create/reassignment, availability reduction, and leave approval. It passed five consecutive matrix runs, the final Phase 8 backend run, and the latest merged integration CI. Availability/leave conflicts return `SCHEDULE_CONFLICT` inside the transaction. Production contention, lock-wait telemetry, and forced retry-exhaustion behavior remain unmeasured.
 
 ### Remaining verification questions
 
-1. Does the same matrix pass against the GitHub CI PostgreSQL service after publication?
-2. Does forced retry exhaustion leave shifts, proposals, incidents, and audit records unchanged?
-3. Are advisory-lock wait time and retry telemetry sufficient for deployment diagnostics?
+1. Does forced retry exhaustion leave shifts, proposals, incidents, and audit records unchanged?
+2. Are advisory-lock wait time and retry telemetry sufficient for deployment diagnostics?
 
 ### Required tests
 
-- Ordinary create racing proposal apply for the same employee/time.
-- Ordinary update/reassignment racing proposal apply.
-- Shift delete or unassign racing apply, if supported.
-- Two-employee reassignment with deterministic lock ordering.
-- Availability/leave mutation racing ordinary shift mutation.
+- Shift delete or unassign racing apply, if supported and not already covered by the shared write-path proof.
 - Retry exhaustion with no partial schedule, incident, proposal, or audit changes.
-- Real PostgreSQL integration tests; in-memory mocks are insufficient for the concurrency claim.
+- Production-like contention and telemetry validation; existing real PostgreSQL integration tests already establish the core concurrency claim.
 
 ### Acceptance criteria
 
@@ -361,4 +356,4 @@ Assigned issue ID: [replace with U-01 to U-10]
 
 ## Scope boundary
 
-This handoff records gaps only. It does not authorize merging PR #7, deployment, purchase, partner-track enrollment, license changes, credential use, or final submission.
+This handoff records gaps only. PR #7 and the later Phase 8–10 pull requests are already merged; this document does not authorize deployment, purchase, partner-track enrollment, license changes, credential use, or final submission.

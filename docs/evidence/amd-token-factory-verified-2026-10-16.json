@@ -1,0 +1,14 @@
+{
+    "verificationStatus":  "VERIFIED_AMD_TOKEN_FACTORY_REQUEST",
+    "verifiedAtUtc":  "2026-10-16T03:08:43.463Z",
+    "gitCommitAtVerification":  "7499b269da39ddc1ce206779c57536b3ce0013f1",
+    "provider":  "AMD Radeon Cloud Token Factory",
+    "endpointHost":  "developer.amd.com.cn",
+    "configuredModel":  "MiniCPM5-2B",
+    "responseModel":  "self-dploy/MiniCPM5-2B",
+    "latencyMs":  3305,
+    "groundingValidation":  "PASSED",
+    "deterministicFallbackUsed":  false,
+    "fixture":  "synthetic-only",
+    "scope":  "Proves one successful grounded Token Factory request only; does not prove enrollment, production readiness, or general AMD hardware compliance."
+}

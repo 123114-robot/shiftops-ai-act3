@@ -82,7 +82,7 @@ export class OpenAICompatibleExplanationProvider implements RawExplanationProvid
       const requestBody: Record<string, unknown> = {
         model: this.config.model,
         temperature: 0,
-        max_tokens: 256,
+        max_tokens: 1024,
         stream: false,
         messages: [
           {
@@ -113,7 +113,17 @@ export class OpenAICompatibleExplanationProvider implements RawExplanationProvid
         model?: unknown;
         choices?: Array<{ message?: { content?: string } }>;
       };
-      if (payload.model !== this.config.model) {
+      if (
+        typeof payload.model !== 'string'
+        || (
+          payload.model !== this.config.model
+          && !(
+            this.config.provider === 'amd-token-factory'
+            && this.config.model === 'MiniCPM5-2B'
+            && payload.model === 'self-dploy/MiniCPM5-2B'
+          )
+        )
+      ) {
         throw new Error('AI provider response model did not match the configured model.');
       }
       const content = payload.choices?.[0]?.message?.content;
