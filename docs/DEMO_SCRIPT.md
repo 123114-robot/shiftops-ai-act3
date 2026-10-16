@@ -1,5 +1,17 @@
 # Five-minute Demo Script
 
+Before recording, run the local PostgreSQL evidence scenario with synthetic data:
+
+```powershell
+$env:DATABASE_URL='postgresql://shiftflow:shiftflow_dev@localhost:5432/shiftflow?schema=public'
+$env:DEMO_EVIDENCE_FILE='demo-evidence.json'
+npm run demo:verify
+Remove-Item Env:DEMO_EVIDENCE_FILE
+Remove-Item Env:DATABASE_URL
+```
+
+The command creates and removes its own synthetic records. It verifies one eligible machine operator, one role-blocked candidate, Manager approval, atomic apply, four audit actions, and a one-shift reduction in the backend-derived unfilled-shift KPI. The generated file proves only a local deterministic PostgreSQL workflow; it is not AMD, browser, deployment, or production evidence.
+
 ## 0:00–0:30 — Problem
 
 Introduce an unfilled shift and the operations manager who must find a safe replacement quickly. State that the demo uses synthetic employee data.
@@ -22,8 +34,8 @@ Approve, apply, and show the changed assignment. Explain apply-time revalidation
 
 ## 4:00–4:30 — Audit trail and failure behavior
 
-Show the audit record. Briefly describe what happens when a candidate becomes ineligible or the model times out.
+Show the four audit actions (`INCIDENT_CREATED`, `PROPOSAL_CREATED`, `PROPOSAL_APPROVED`, and `PROPOSAL_APPLIED`). Briefly describe what happens when a candidate becomes ineligible or the model times out.
 
 ## 4:30–5:00 — Business value and evidence
 
-State the intended time-to-replacement metric, current limitations, public repository, and working application URL. Avoid unmeasured savings or unsupported compliance claims.
+Show the backend-derived unfilled-shift count falling by one after apply. State that time-to-replacement remains a proposed metric until real user sessions are measured, then state the current limitations, public repository, and working application URL. Avoid unmeasured savings or unsupported compliance claims.
