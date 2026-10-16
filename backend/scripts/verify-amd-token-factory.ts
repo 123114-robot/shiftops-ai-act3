@@ -25,7 +25,7 @@ const remote = new OpenAICompatibleExplanationProvider({
   model,
   timeoutMs: timeoutSeconds * 1_000,
   provider: 'amd-token-factory',
-  supportsResponseFormat: false,
+  supportsResponseFormat: true,
 });
 const grounded = new GroundedExplanationProvider(
   remote,
