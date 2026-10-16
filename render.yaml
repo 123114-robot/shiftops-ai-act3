@@ -18,11 +18,13 @@ services:
     name: shiftops-ai-api
     plan: free
     region: oregon
-    buildCommand: npm ci && npm run db:generate && npm run build -w backend
+    buildCommand: npm ci --include=dev && npm run db:generate && npm run build -w backend
     startCommand: npm run db:deploy -w backend && npm run db:seed:demo -w backend && npm run start -w backend
     healthCheckPath: /api/health
     autoDeployTrigger: 'off'
     envVars:
+      - key: NODE_VERSION
+        value: '24.22.0'
       - key: DATABASE_URL
         sync: false
       - key: JWT_SECRET

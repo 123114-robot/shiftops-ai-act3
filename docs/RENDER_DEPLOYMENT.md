@@ -14,7 +14,7 @@ The root `render.yaml` defines only the Static Site and Web Service. It intentio
 
 ## Settings to paste into Render
 
-Leave **Root Directory blank** for both services and select branch `chore/render-demo-deployment`.
+Leave **Root Directory blank** for both services and select branch `feature/shiftops-ui-ux-redesign`.
 
 ### Web Service
 
@@ -24,7 +24,7 @@ Leave **Root Directory blank** for both services and select branch `chore/render
 - Build Command:
 
 ```text
-npm ci && npm run db:generate && npm run build -w backend
+npm ci --include=dev && npm run db:generate && npm run build -w backend
 ```
 
 - Start Command:
@@ -58,6 +58,7 @@ npm ci && npm run build -w frontend
 
 Add these in the Web Service dashboard:
 
+- `NODE_VERSION=24.22.0`: pins the tested Node.js LTS instead of Render's newer Current release.
 - `DATABASE_URL`: use the **Internal Database URL** from the existing `shiftops-ai-db`; do not create another database.
 - `JWT_SECRET`: a new strong random secret generated/stored only in Render.
 - `FRONTEND_URL`: the final Static Site origin, for example `https://shiftops-ai-web.onrender.com`, with no trailing slash.
@@ -69,6 +70,8 @@ Add these in the Web Service dashboard:
 - `SHIFTOPS_REQUIRE_ROLE_MATCH=true`.
 
 Do not set `PORT`; Render supplies it. Do not configure an AMD key for this deterministic demo.
+
+Keep `--include=dev` in the backend Build Command even when `NODE_ENV=production`. TypeScript, Prisma and the Express/CORS/JWT declaration packages are build-time `devDependencies`; Render may omit them from a plain production `npm ci`.
 
 ### Static Site
 
@@ -99,7 +102,7 @@ This credential is intentionally for a public synthetic demo and must never be r
 ## Manual deployment sequence
 
 1. Open the existing `shiftops-ai-db` and copy its **Internal Database URL**.
-2. In the manually created Web Service, select repository `123114-robot/shiftops-ai-act3` and branch `chore/render-demo-deployment`.
+2. In the manually created Web Service, select repository `123114-robot/shiftops-ai-act3` and branch `feature/shiftops-ui-ux-redesign`.
 3. Enter the Web Service settings and environment variables exactly as listed above, using the existing database URL.
 4. Deploy the Web Service. Its Start Command applies migrations, safely seeds synthetic records and then starts the API.
 5. Verify `https://<api-host>/api/health` returns HTTP 200 with `status: ok`.

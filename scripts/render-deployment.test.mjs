@@ -11,6 +11,7 @@ test('Render blueprint defines the static site and API without creating a databa
   assert.match(blueprint, /staticPublishPath: \.\/frontend\/dist/);
   assert.match(blueprint, /name: shiftops-ai-api/);
   assert.match(blueprint, /region: oregon/);
+  assert.match(blueprint, /buildCommand: npm ci --include=dev && npm run db:generate && npm run build -w backend/);
   assert.match(blueprint, /healthCheckPath: \/api\/health/);
   assert.match(blueprint, /startCommand: npm run db:deploy -w backend && npm run db:seed:demo -w backend && npm run start -w backend/);
   assert.match(blueprint, /key: DATABASE_URL\s+sync: false/);
@@ -18,6 +19,7 @@ test('Render blueprint defines the static site and API without creating a databa
   assert.match(blueprint, /key: JWT_SECRET[\s\S]*generateValue: true/);
   assert.match(blueprint, /key: DEMO_PASSWORD\s+sync: false/);
   assert.match(blueprint, /key: AI_MODE\s+value: deterministic/);
+  assert.match(blueprint, /key: NODE_VERSION\s+value: '24\.22\.0'/);
   assert.doesNotMatch(blueprint, /AI_API_KEY/);
 });
 

@@ -4,9 +4,10 @@ Last updated: 2026-10-16 (Australia/Sydney)
 
 ## Render deployment preparation
 
-- Branch: `chore/render-demo-deployment`, based on UI/UX commit `1c2326a`.
+- Branch: deployment preparation is integrated into `feature/shiftops-ui-ux-redesign`, based on UI/UX commit `1c2326a`.
 - Prepared only: Render Static Site + Oregon Free Node Web Service configuration that reuses the existing Oregon Free PostgreSQL database, production `PORT` binding, health check, Prisma migration baseline, guarded additive synthetic Demo Seed and deployment/UAT instructions.
 - Free-plan initialization: the Web Service Start Command runs `db:deploy`, then `db:seed:demo`, then starts Express. The Blueprint contains no database resource and cannot request a duplicate database.
+- Production build fix: the backend Build Command uses `npm ci --include=dev` so strict TypeScript declarations and Prisma tooling remain available under `NODE_ENV=production`, with Render pinned to tested Node.js LTS `24.22.0`.
 - AI remains deterministic; no live AMD inference, Render service or public URL is claimed.
 - Deployment requires the owner to paste the existing database's Internal Database URL and follow the dashboard steps in `docs/RENDER_DEPLOYMENT.md`.
 - Validation: PASS for deployment configuration tests 3/3, PostgreSQL-enabled backend 95/95, frontend 23/23, readiness 5/5, lint, typecheck, production build and `git diff --check`.
