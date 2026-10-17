@@ -76,6 +76,29 @@ Set `DATABASE_TESTS=true` with a reachable PostgreSQL `DATABASE_URL` to execute 
 
 The current delivery branch is `feature/shiftops-ui-ux-redesign`; the owner-confirmed deployed source commit is `7edfe2183d0502f55a343056f3d34c45bbe3b716`. Earlier GitHub Actions run [38827402353](https://github.com/123114-robot/shiftops-ai-act3/actions/runs/38827402353) completed successfully on 16 October 2026 with PostgreSQL-backed CI. Current evidence is tracked in [docs/STATUS.md](docs/STATUS.md).
 
+## Public demo access
+
+The public hackathon demo contains synthetic data only and is available for judges and visitors to explore:
+
+- Application: <https://shiftops-ai-web.onrender.com>
+- Manager email: `manager@shiftflow.local`
+- Demo password: `1098765432123`
+
+The Render free-tier API may take approximately 50 seconds to wake on the first request. If the first sign-in attempt times out, wait briefly, refresh the page, and sign in again.
+
+This is a shared demonstration environment. Changes made through the Manager account may remain visible to later visitors. Do not enter personal, confidential, or production data.
+
+Suggested walkthrough:
+
+1. Sign in with the public Manager account.
+2. Review the Dashboard, Employees, Weekly Roster, Shifts, and Leave Requests pages.
+3. Open **ShiftOps Copilot**.
+4. Enter Shift ID `demo-shift-incident` and a synthetic incident reason.
+5. Evaluate candidates and review the deterministic eligibility reasons.
+6. Create a proposal, approve it, apply it, and inspect the Audit history.
+
+The public Render demo uses deterministic explanations. Do not interpret its output as a live AMD inference result.
+
 ## Demo workflow
 
 1. Start PostgreSQL, apply the schema, seed the documented synthetic data, and run the application.
@@ -93,7 +116,7 @@ Owner-confirmed public application: `https://shiftops-ai-web.onrender.com`. Reco
 
 - One real Token Factory request is verified, but AMD enrollment/general hardware compliance and AMD use in the public deterministic demo remain unverified.
 - The public deployment is owner-confirmed; formal public end-to-end workflow UAT has not been recorded.
-- Demo video, pitch deck, cover image, and authenticated final submission remain incomplete.
+- Demo video, pitch deck, and cover artwork are available in [`submission-assets/`](submission-assets/); authenticated final submission remains owner-operated.
 - Source ownership and authority to apply an MIT license remain blocked pending owner confirmation.
 - Local development/CI may use `prisma db push`; Render uses the committed Prisma migration baseline and guarded idempotent demo seed.
 - Remaining dependency advisories and production contention or telemetry evidence require separate work.
