@@ -1,6 +1,15 @@
 # Project Status
 
-Last updated: 2026-10-17 (Australia/Sydney)
+Last updated: 2026-11-18 (Australia/Sydney)
+
+## 2026-11-18 local release hardening
+
+- Local release gate: **PARTIAL**. Clean install, Prisma generation/schema validation, lint, typecheck, frontend 23/23, readiness 5/5, deployment 3/3, production build, and PostgreSQL-enabled backend 95/95 passed.
+- The committed initial migration deployed successfully to an empty disposable PostgreSQL database; a second deploy reported no pending migrations. The pre-existing local `shiftflow` database was not altered.
+- A date-sensitive PostgreSQL concurrency test was corrected to use the next UTC Monday instead of the now-historical `2026-10-19`; the six-test transaction file passed five consecutive runs.
+- Compatible lockfile updates reduced audit exposure, but 8 full-tree advisories and 5 production-oriented advisories remain. See `docs/NPM_AUDIT.md`.
+- AMD credentials/account authorization, production deployment changes, licensing confirmation, and final submission remain external gates. No provider request, push, merge, deployment, or submission occurred.
+- Detailed evidence: `docs/RELEASE_HARDENING_2026-11-18.md`.
 
 ## Render deployment
 
