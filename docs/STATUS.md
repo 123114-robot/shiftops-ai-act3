@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-11-18 (Australia/Sydney)
+Last updated: 2026-11-19 (Australia/Sydney)
 
 ## 2026-11-18 local release hardening
 
@@ -27,6 +27,14 @@ Last updated: 2026-11-18 (Australia/Sydney)
 - Local validation: PostgreSQL backend 95/95, frontend 23/23, readiness 5/5, deployment 3/3, migration deploy twice, Prisma generation/validation, lint, typecheck, and production build PASS.
 - Render was not operated; the public deployment does not contain this local change until the owner authorizes push and redeployment.
 - Evidence: `docs/STATIC_SITE_BUILD_HARDENING_2026-11-18.md`.
+
+## 2026-11-19 final readiness gap verification
+
+- Reconciled stale submission documentation with the committed 16-page pitch deck PDF, narrated/subtitled demo MP4, and promotional cover concept in `submission-assets/`.
+- Repository asset existence is not treated as a public video URL, portal upload acceptance, public UAT, or final submission evidence.
+- Configured readiness check: repository VERIFIED, local READY, Evolus NOT_SELECTED; AMD remains BLOCKED without owner-controlled live configuration/human evidence review, and assets remain blocked by missing public `DEMO_VIDEO_URL`.
+- No further local product phase is authorized by the roadmap. Remaining gates are owner-controlled enrollment/AMD evidence, licensing, public UAT, asset hosting/upload, authenticated portal review, and final submission approval.
+- Evidence: `docs/FINAL_READINESS_GAP_2026-11-19.md`.
 
 ## Render deployment
 

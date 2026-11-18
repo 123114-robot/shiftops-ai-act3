@@ -130,6 +130,6 @@ This provenance record does not prove authorship, ownership, or permission to re
 
 ## Competition state
 
-Phases 0–10 and the UI/UX redesign are implemented within their documented boundaries. The owner confirms the public Render deployment, and one bounded real AMD Token Factory request is recorded. Public workflow UAT, submission assets and formal AMD Developer Hackathon ACT III submission remain incomplete. The submission deadline recorded from the user's authenticated lablab.ai event page screenshot is **18 October 2026 at 9:00 PM AEDT**; Codex did not independently access that authenticated screenshot.
+Phases 0–10 and the UI/UX redesign are implemented within their documented boundaries. The owner confirms the public Render deployment, and one bounded real AMD Token Factory request is recorded. The video, pitch deck PDF and promotional cover concept are committed in `submission-assets/`; public workflow UAT, judge-accessible asset upload/hosting, authenticated portal review and formal submission remain incomplete. The submission deadline recorded from the user's authenticated lablab.ai event page screenshot is **18 October 2026 at 9:00 PM AEDT**; Codex did not independently access that authenticated screenshot.
 
 See [docs/FINAL_SUBMISSION_STATUS.md](docs/FINAL_SUBMISSION_STATUS.md), [docs/COMPETITION_REQUIREMENTS.md](docs/COMPETITION_REQUIREMENTS.md), [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md), and [docs/SUBMISSION_DRAFT.md](docs/SUBMISSION_DRAFT.md) before making any public compliance claim.

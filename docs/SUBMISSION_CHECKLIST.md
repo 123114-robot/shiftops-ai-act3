@@ -1,6 +1,6 @@
 # Submission Checklist
 
-Last verified: 2026-10-16 (Australia/Sydney). This checklist separates repository readiness from evidence that must come from authenticated services or real runtime execution.
+Last verified: 2026-11-19 (Australia/Sydney). This checklist separates repository readiness from evidence that must come from authenticated services or real runtime execution.
 
 ## Required before submission
 
@@ -11,9 +11,11 @@ Last verified: 2026-10-16 (Australia/Sydney). This checklist separates repositor
 - [ ] Record the selected main challenge in the submission
 - [x] Record the authenticated submission cutoff as **18 October 2026, 9:00 PM AEDT**, sourced from the user's authenticated lablab.ai event page screenshot; Codex did not independently inspect the screenshot
 - [x] Record owner-confirmed public application URL: `https://shiftops-ai-web.onrender.com`
-- [ ] Record a demo video; general lablab guidance says no more than five minutes
-- [ ] Export the pitch deck as PDF
-- [ ] Add a cover image
+- [x] Record and commit the narrated/subtitled demo MP4; general lablab guidance says no more than five minutes
+- [x] Export and commit the 16-page pitch deck as PDF
+- [x] Add and commit a landscape promotional cover concept
+- [ ] Host/upload the demo video and verify judge access or authenticated portal acceptance
+- [ ] Verify the deck, cover and video against current authenticated portal size/format requirements
 - [ ] Resolve source-code licensing: both this repository and its ShiftFlow source currently expose no GitHub-detected license; do not claim MIT compliance until ownership and licensing are confirmed
 
 ## AMD evidence gate
@@ -47,6 +49,13 @@ Remove-Item Env:REPOSITORY_VISIBILITY
 ```
 
 Supply `AMD_INFERENCE_EVIDENCE_FILE` and `PITCH_DECK_FILE` as paths to real files, plus `WORKING_PROTOTYPE_URL` and `DEMO_VIDEO_URL` as HTTP(S) URLs. Evolus selection requires the five documented `EVOLUS_*_EVIDENCE_FILE` paths. The checker tests existence/URL shape and never prints secret values; human review must still confirm evidence quality.
+
+Current repository paths:
+
+- `AMD_INFERENCE_EVIDENCE_FILE=docs/evidence/amd-token-factory-verified-2026-10-16.json`
+- `PITCH_DECK_FILE=submission-assets/ShiftOps_AI_ACT3_Pitch_Deck.pdf`
+- Video file: `submission-assets/ShiftOps_AI_Demo_Final.mp4` (the checker still requires a public `DEMO_VIDEO_URL`)
+- Cover file: `submission-assets/ShiftOps_AI_Cover_Concept.png`
 
 ## Official sources
 

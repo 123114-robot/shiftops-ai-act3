@@ -1,6 +1,6 @@
 # ShiftOps AI Final Submission Status
 
-Last reconciled: 2026-10-17 (Australia/Sydney)
+Last reconciled: 2026-11-19 (Australia/Sydney)
 
 ## Available now
 
@@ -15,6 +15,7 @@ Last reconciled: 2026-10-17 (Australia/Sydney)
 - UI/UX redesign: theme, navigation, workforce pages, roster filters and explicit shift actions
 - Automated evidence: backend PostgreSQL 95/95, frontend 23/23, readiness 5/5, deployment 3/3, lint, typecheck and build previously passed at the recorded milestones
 - AMD evidence: one real grounded Token Factory request, configured `MiniCPM5-2B`, returned `self-dploy/MiniCPM5-2B`, 3305 ms, no fallback
+- Submission assets committed in `submission-assets/`: 16-page pitch deck PDF, final narrated/subtitled demo MP4, and landscape promotional cover concept
 
 ## Evidence boundaries
 
@@ -22,32 +23,33 @@ Last reconciled: 2026-10-17 (Australia/Sydney)
 - The public Render demo uses deterministic explanation mode.
 - The AMD evidence proves one synthetic-only real request, not AMD execution in the public demo or general hardware/account compliance.
 - Local/browser and automated tests are not a completed public end-to-end UAT.
-- No video, pitch deck, cover image or final portal submission is claimed complete.
+- Repository asset existence does not prove a public video URL, authenticated portal upload, format acceptance, claim review, or final submission.
+- The cover image is promotional concept artwork, not a deployed-product screenshot; the demo video explicitly shows deterministic explanation mode.
 
 ## Requires owner action
 
 - [ ] Perform and record the final public workflow UAT.
-- [ ] Record the demo video using the three demo-video documents.
+- [x] Record and commit the demo video using the demo-video guidance.
 - [ ] Review narration and final claims.
 - [ ] Confirm authenticated enrollment, team, category and track selections.
 - [ ] Confirm source ownership/licensing before claiming MIT compliance.
-- [ ] Upload the video, deck and cover image.
+- [ ] Upload/host the video, deck and cover image and verify judge-accessible links or portal acceptance.
 - [ ] Review and submit the final lablab.ai form.
 
-## Requires new artifacts
+## Available repository artifacts
 
-- [ ] Final demo video and hosted URL
-- [ ] Six-slide editable pitch deck and PDF
-- [ ] Landscape submission cover image
+- [x] Final narrated/subtitled demo MP4: `submission-assets/ShiftOps_AI_Demo_Final.mp4`
+- [x] 16-page pitch deck PDF: `submission-assets/ShiftOps_AI_ACT3_Pitch_Deck.pdf`
+- [x] Landscape promotional cover concept: `submission-assets/ShiftOps_AI_Cover_Concept.png`
+- [ ] Public/judge-accessible demo video URL or authenticated upload confirmation
 - [ ] Final screenshots selected from the public product
 
 ## Current blockers
 
-- Pitch deck and cover image are not yet created.
-- Video has not been recorded.
+- Repository assets have not been independently verified against the current authenticated portal requirements or uploaded/hosted for judges.
 - Full public workflow UAT has not been formally recorded.
 - Authenticated submission fields and licensing decision remain owner-controlled.
 
 ## Fastest next action
 
-Run the public workflow once as a recording preflight, choose the exact shift/candidate scenario, then record the final 3–4 minute screen capture before designing the deck around those real screenshots.
+Perform the public workflow UAT in a clean browser, review the committed video/deck/cover claims against that run, then upload or host the assets through the owner-controlled submission workflow.
