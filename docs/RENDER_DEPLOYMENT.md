@@ -51,7 +51,7 @@ On later restarts or redeploys, `prisma migrate deploy` skips migrations already
 - Build Command:
 
 ```text
-npm ci && npm run build -w frontend
+npm ci --include=dev && npm run build -w frontend
 ```
 
 - Publish Directory: `frontend/dist`
@@ -82,6 +82,8 @@ Keep `--include=dev` in the backend Build Command even when `NODE_ENV=production
 ### Static Site
 
 - `VITE_API_URL`: final Web Service URL plus `/api`, for example `https://shiftops-ai-api.onrender.com/api`.
+
+Keep `--include=dev` in the Static Site Build Command. Vite, Tailwind, the Tailwind Vite plugin and TypeScript are build-time development dependencies; the generated `frontend/dist` output remains the only published static runtime artifact.
 
 Never put `JWT_SECRET`, `DATABASE_URL`, AMD credentials, demo passwords or authorization headers in Git, screenshots, frontend variables or build logs.
 

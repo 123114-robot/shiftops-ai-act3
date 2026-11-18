@@ -8,6 +8,7 @@ test('Render blueprint defines the static site and API without creating a databa
   const blueprint = await read('render.yaml');
   assert.match(blueprint, /name: shiftops-ai-web/);
   assert.match(blueprint, /runtime: static/);
+  assert.match(blueprint, /buildCommand: npm ci --include=dev && npm run build -w frontend/);
   assert.match(blueprint, /staticPublishPath: \.\/frontend\/dist/);
   assert.match(blueprint, /name: shiftops-ai-api/);
   assert.match(blueprint, /region: oregon/);

@@ -20,6 +20,14 @@ Last updated: 2026-11-18 (Australia/Sydney)
 - Prisma 7.10.1 failed the isolated generation gate because it requires `prisma.config.ts` and a driver adapter or Accelerate URL. Prisma remains 6.19.3 pending a separately authorized architecture migration.
 - Evidence: `docs/DEPENDENCY_COMPATIBILITY_2026-11-18.md`, `docs/PRISMA_7_COMPATIBILITY_2026-11-18.md`, and `docs/NPM_AUDIT.md`.
 
+## 2026-11-18 Static Site build hardening
+
+- Render Static Site now uses `npm ci --include=dev && npm run build -w frontend`, matching the frontend's correct build-tool classification even when `NODE_ENV=production`.
+- Deployment contract test followed RED → GREEN and now locks the frontend command as well as the backend command.
+- Local validation: PostgreSQL backend 95/95, frontend 23/23, readiness 5/5, deployment 3/3, migration deploy twice, Prisma generation/validation, lint, typecheck, and production build PASS.
+- Render was not operated; the public deployment does not contain this local change until the owner authorizes push and redeployment.
+- Evidence: `docs/STATIC_SITE_BUILD_HARDENING_2026-11-18.md`.
+
 ## Render deployment
 
 - Branch: deployment preparation is integrated into `feature/shiftops-ui-ux-redesign`, based on UI/UX commit `1c2326a`.
