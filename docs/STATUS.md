@@ -16,8 +16,9 @@ Last updated: 2026-11-18 (Australia/Sydney)
 - Vitest `3.2.7 -> 5.1.0`: **VERIFIED locally** across backend 95/95 with PostgreSQL, frontend 23/23, readiness 5/5, deployment 3/3, lint, typecheck, and production build.
 - Safe Express transitive updates moved `body-parser` to 2.4.0 and `qs` to 6.17.1, removing those production-chain advisories.
 - Prisma remains 6.19.3; its major upgrade was intentionally not combined with the Vitest migration.
-- Audit currently reports 14 high/0 critical nodes in the full tree and 7 high/0 critical in `--omit=dev`. The increased count reflects a newly published `picomatch` advisory propagated through build tooling; no patched compatible `picomatch` release was available.
-- Evidence: `docs/DEPENDENCY_COMPATIBILITY_2026-11-18.md` and `docs/NPM_AUDIT.md`.
+- Audit currently reports 14 high/0 critical nodes in the full tree and 3 high/0 critical in `--omit=dev`. Tailwind/Vite build tools were correctly reclassified as development dependencies; the remaining production-oriented nodes are Prisma CLI/config tooling pulled through the Prisma Client optional peer relationship.
+- Prisma 7.10.1 failed the isolated generation gate because it requires `prisma.config.ts` and a driver adapter or Accelerate URL. Prisma remains 6.19.3 pending a separately authorized architecture migration.
+- Evidence: `docs/DEPENDENCY_COMPATIBILITY_2026-11-18.md`, `docs/PRISMA_7_COMPATIBILITY_2026-11-18.md`, and `docs/NPM_AUDIT.md`.
 
 ## Render deployment
 
