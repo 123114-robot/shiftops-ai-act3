@@ -3,9 +3,10 @@ import type { Employee } from '../../api/employees';
 
 type EditableEmployee = Pick<Employee, 'firstName' | 'lastName' | 'email' | 'phone' | 'jobTitle'>;
 
-export function EmployeeEditForm({ employee, onSave }: {
+export function EmployeeEditForm({ employee, onSave, onCancel }: {
   employee: Employee;
   onSave: (input: EditableEmployee) => Promise<void>;
+  onCancel: () => void;
 }) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,7 +33,7 @@ export function EmployeeEditForm({ employee, onSave }: {
           />
         </label>
       ))}
-      <button type="submit">Save changes</button>
+      <div className="actions"><button type="submit">Save Changes</button><button className="button button--secondary" type="button" onClick={onCancel}>Cancel Editing</button></div>
     </form>
   );
 }

@@ -1,6 +1,66 @@
 # Project Status
 
-Last updated: 2026-10-16 (Australia/Sydney)
+Last updated: 2026-11-19 (Australia/Sydney)
+
+## 2026-11-18 local release hardening
+
+- Local release gate: **PARTIAL**. Clean install, Prisma generation/schema validation, lint, typecheck, frontend 23/23, readiness 5/5, deployment 3/3, production build, and PostgreSQL-enabled backend 95/95 passed.
+- The committed initial migration deployed successfully to an empty disposable PostgreSQL database; a second deploy reported no pending migrations. The pre-existing local `shiftflow` database was not altered.
+- A date-sensitive PostgreSQL concurrency test was corrected to use the next UTC Monday instead of the now-historical `2026-10-19`; the six-test transaction file passed five consecutive runs.
+- Compatible lockfile updates reduced audit exposure, but 8 full-tree advisories and 5 production-oriented advisories remain. See `docs/NPM_AUDIT.md`.
+- AMD credentials/account authorization, production deployment changes, licensing confirmation, and final submission remain external gates. No provider request, push, merge, deployment, or submission occurred.
+- Detailed evidence: `docs/RELEASE_HARDENING_2026-11-18.md`.
+
+## 2026-11-18 dependency compatibility gate
+
+- Vitest `3.2.7 -> 5.1.0`: **VERIFIED locally** across backend 95/95 with PostgreSQL, frontend 23/23, readiness 5/5, deployment 3/3, lint, typecheck, and production build.
+- Safe Express transitive updates moved `body-parser` to 2.4.0 and `qs` to 6.17.1, removing those production-chain advisories.
+- Prisma remains 6.19.3; its major upgrade was intentionally not combined with the Vitest migration.
+- Audit currently reports 14 high/0 critical nodes in the full tree and 3 high/0 critical in `--omit=dev`. Tailwind/Vite build tools were correctly reclassified as development dependencies; the remaining production-oriented nodes are Prisma CLI/config tooling pulled through the Prisma Client optional peer relationship.
+- Prisma 7.10.1 failed the isolated generation gate because it requires `prisma.config.ts` and a driver adapter or Accelerate URL. Prisma remains 6.19.3 pending a separately authorized architecture migration.
+- Evidence: `docs/DEPENDENCY_COMPATIBILITY_2026-11-18.md`, `docs/PRISMA_7_COMPATIBILITY_2026-11-18.md`, and `docs/NPM_AUDIT.md`.
+
+## 2026-11-18 Static Site build hardening
+
+- Render Static Site now uses `npm ci --include=dev && npm run build -w frontend`, matching the frontend's correct build-tool classification even when `NODE_ENV=production`.
+- Deployment contract test followed RED → GREEN and now locks the frontend command as well as the backend command.
+- Local validation: PostgreSQL backend 95/95, frontend 23/23, readiness 5/5, deployment 3/3, migration deploy twice, Prisma generation/validation, lint, typecheck, and production build PASS.
+- Render was not operated; the public deployment does not contain this local change until the owner authorizes push and redeployment.
+- Evidence: `docs/STATIC_SITE_BUILD_HARDENING_2026-11-18.md`.
+
+## 2026-11-19 final readiness gap verification
+
+- Reconciled stale submission documentation with the committed 16-page pitch deck PDF, narrated/subtitled demo MP4, and promotional cover concept in `submission-assets/`.
+- Repository asset existence is not treated as a public video URL, portal upload acceptance, public UAT, or final submission evidence.
+- Configured readiness check: repository VERIFIED, local READY, Evolus NOT_SELECTED; AMD remains BLOCKED without owner-controlled live configuration/human evidence review, and assets remain blocked by missing public `DEMO_VIDEO_URL`.
+- No further local product phase is authorized by the roadmap. Remaining gates are owner-controlled enrollment/AMD evidence, licensing, public UAT, asset hosting/upload, authenticated portal review, and final submission approval.
+- Evidence: `docs/FINAL_READINESS_GAP_2026-11-19.md`.
+
+## Render deployment
+
+- Branch: deployment preparation is integrated into `feature/shiftops-ui-ux-redesign`, based on UI/UX commit `1c2326a`.
+- Deployment: **OWNER-CONFIRMED LIVE** at `https://shiftops-ai-web.onrender.com`; API `https://shiftops-ai-api.onrender.com`; deployed source commit `7edfe2183d0502f55a343056f3d34c45bbe3b716`.
+- Deployed configuration: Render Static Site + Oregon Free Node Web Service reusing the existing Oregon Free PostgreSQL database, production `PORT` binding, health check, Prisma migration baseline and guarded additive synthetic Demo Seed.
+- Free-plan initialization: the Web Service Start Command runs `db:deploy`, then `db:seed:demo`, then starts Express. The Blueprint contains no database resource and cannot request a duplicate database.
+- Production build fix: the backend Build Command uses `npm ci --include=dev` so strict TypeScript declarations and Prisma tooling remain available under `NODE_ENV=production`, with Render pinned to tested Node.js LTS `24.22.0`.
+- The public Render demo remains deterministic. Separately, one bounded real AMD Token Factory request is verified by `docs/evidence/amd-token-factory-verified-2026-10-16.json`; this is not evidence that Render uses remote AMD mode.
+- Deployment requires the owner to paste the existing database's Internal Database URL and follow the dashboard steps in `docs/RENDER_DEPLOYMENT.md`.
+- Validation: PASS for deployment configuration tests 3/3, PostgreSQL-enabled backend 95/95, frontend 23/23, readiness 5/5, lint, typecheck, production build and `git diff --check`.
+- Disposable database rehearsal: PASS for initial `prisma migrate deploy`, two consecutive idempotent Demo Seed runs, exactly one stable Demo Shift and Demo Leave, followed by verified temporary-database removal.
+- Production start rehearsal: PASS with the built API bound through `PORT=3101` on `0.0.0.0`; `/api/health` returned HTTP 200-equivalent JSON locally.
+
+## UI/UX redesign (local feature branch)
+
+- Branch: `feature/shiftops-ui-ux-redesign`, based on verified integration commit `5360ce5`.
+- Implemented: persistent system-default light/dark theme, semantic design tokens, role-aware sidebar/header, shared layout and feedback components.
+- Employee management: responsive list/detail layouts, explicit edit states, confirmed deactivation and record-preserving reactivation through the existing Manager-only PATCH contract.
+- Weekly roster: Manager Day/Week/Month/Custom ranges, range validation, presets and period navigation using the existing shift range API; employee weekly API remains unchanged.
+- Shift management: visibly separate create/edit modes and confirmed saved-shift cancellation.
+- Dashboard, availability, leave and ShiftOps Copilot use the shared shell without changing business logic, API contracts or AMD provider behavior.
+- Automated validation and manual UAT status are recorded below and in `docs/UI_UX_UAT_CHECKLIST.md`. Owner UAT is not yet claimed.
+- UI/UX feature validation: PASS for lint, typecheck, production build, readiness 5/5, PostgreSQL-enabled backend 95/95, frontend 23/23 and `git diff --check`.
+- `npm run db:generate`: BLOCKED by a Windows file lock from the already-running local backend; the existing generated client remained usable for all 95 PostgreSQL-enabled backend tests and the production build.
+- Limited authenticated browser check: PASS for Manager login, Dashboard, theme toggle/persistence across navigation, narrow employee cards and Weekly Roster controls/empty state. Wide-screen browser review, mutation workflows and owner UAT remain pending. See `docs/UI_UX_BROWSER_EVIDENCE.md`.
 
 ## Current state
 
@@ -15,7 +75,7 @@ Last updated: 2026-10-16 (Australia/Sydney)
 - Implemented and merged in Phase 9: a self-cleaning synthetic PostgreSQL evidence command that verifies the full incident-to-audit workflow and measures the backend-derived unfilled-shift delta without claiming AMD execution
 - Verified and merged in Phase 10: the rendered Manager UI completes login, shift creation, candidate evaluation, proposal creation, explicit approval, apply, and audit display against the real local API and PostgreSQL database
 - Latest verified remote integration: default branch `feature/phase-0-foundation`, commit `e6bae759476ce9340f27957c20eff1f4937befab`; GitHub Actions run `38827402353` completed successfully with PostgreSQL
-- Not verified: successful live AMD request (credentials/model unavailable), AMD account/hardware evidence, Evolus, deployment, video, deck, or portal submission
+- Verified separately: one successful grounded AMD Token Factory request using configured model `MiniCPM5-2B`, returned model `self-dploy/MiniCPM5-2B`, without fallback. Not verified: AMD account enrollment/general hardware compliance, AMD execution in the public Render demo, Evolus, final public workflow UAT, video, deck, cover image, or portal submission.
 
 ## Validation
 
@@ -69,8 +129,8 @@ See `docs/OPEN_ISSUES_HANDOFF.md` for the issue-by-issue handoff, evidence requi
 
 - User registration, ADP approval, team enrollment, and event workspace access cannot be verified from public pages.
 - Submission deadline: **18 October 2026, 9:00 PM AEDT**, sourced from the user's authenticated lablab.ai event page screenshot. Codex did not independently inspect that authenticated screenshot; enrollment and portal state remain unverified.
-- AMD Developer Cloud allocation, credentials, model endpoint, and inference evidence are unavailable locally.
-- AMD Token Factory adapter status: IMPLEMENTED BUT NOT TESTED against the live service; mocked responses are not compliance evidence.
+- AMD Token Factory adapter status: one real synthetic-only request is VERIFIED by the committed sanitized evidence file. Credentials remain secret and unavailable in the repository, as required.
+- AMD competition compliance remains PARTIAL until the owner confirms enrollment/infrastructure eligibility and the final presentation accurately distinguishes the verified request from the deterministic public demo.
 - Evolus event code/workspace, API key, and connected AMD vLLM endpoint are unavailable locally.
 - Track selection remains open; Evolus is optional for the main event but mandatory for its partner prize.
 - GitHub detects no license for this repository or its ShiftFlow source; ownership and MIT-compatibility must be resolved before submission.

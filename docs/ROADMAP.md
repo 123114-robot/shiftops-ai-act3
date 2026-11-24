@@ -2,6 +2,8 @@
 
 Each phase requires user verification and explicit approval before the next begins.
 
+Current delivery update (2026-10-16): Phases 0–10 and the UI/UX redesign are implemented. The owner confirms the Render demo is live from commit `7edfe2183d0502f55a343056f3d34c45bbe3b716`. One real synthetic-only grounded AMD Token Factory request is verified in `docs/evidence/amd-token-factory-verified-2026-10-16.json`; the public Render demo remains deterministic. Final public workflow UAT, video, pitch deck, cover image and authenticated submission remain outstanding. Older phase notes below preserve the evidence boundary at the time each phase closed.
+
 ## Phase 0 — Foundation (complete)
 
 Protected source snapshot, evidence-bounded requirements, architecture/docs, environment contract, health endpoint, synthetic fixture, smoke tests, and CI baseline.
@@ -45,12 +47,12 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 - PARTIAL: ordinary shift create/update does not yet validate and persist inside the shared employee lock protocol.
 - Complete handoff: `docs/OPEN_ISSUES_HANDOFF.md`.
 
-## Phase 7 — AMD Token Factory adapter (merged; live inference blocked)
+## Phase 7 — AMD Token Factory adapter (merged; one later live request verified)
 
 - Implemented: explicit AMD provider configuration, fixed official Token Factory base URL, strict response schema/model/grounding validation, safe provenance, visible source labels, deterministic fallback, and a synthetic live-evidence command.
 - Verified: focused tests, full local non-database regression, lint, typecheck, build, and PR CI including PostgreSQL passed for commit `43e2359`.
-- BLOCKED: no `AI_API_KEY`, exact Token Factory model ID, successful live request, or human-reviewed runtime evidence is available.
-- Pull request #7 is merged. This does not verify a real AMD request.
+- Later evidence: one real grounded request completed with configured model `MiniCPM5-2B`, provider-returned identifier `self-dploy/MiniCPM5-2B`, 3305 ms latency and no deterministic fallback. See the committed sanitized evidence record.
+- Boundary: this request does not prove AMD use in the public deterministic Render demo or general account/hardware compliance.
 
 ## Phase 8 — Scheduling-write serialization (merged)
 
@@ -71,8 +73,8 @@ Protected source snapshot, evidence-bounded requirements, architecture/docs, env
 - Verified: one eligible and two blocked candidates were displayed, the proposal reached `APPLIED`, all four expected audit actions were visible, PostgreSQL recorded `SCHEDULED`/`APPLIED`/`RESOLVED`, and the temporary synthetic records were removed.
 - Evidence boundary: the UI displayed `[Source: deterministic]`; this is not AMD runtime or public-deployment evidence.
 
-## Later work (not authorized)
+## Remaining submission work
 
-- Execute and record a real AMD Token Factory inference run once credentials and an exact model ID are available.
+- Reconcile final AMD claims with the verified request while stating that the public demo is deterministic.
 - Select and implement the optional Evolus track only with an event workspace and explicit track decision.
-- Deploy and submit only after the evidence gate is complete.
+- Complete public workflow UAT, video, pitch deck, cover image and owner-controlled submission.
