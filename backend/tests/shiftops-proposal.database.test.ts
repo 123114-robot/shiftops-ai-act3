@@ -192,14 +192,10 @@ databaseDescribe('ShiftOps proposal database transaction', () => {
     const availability = new AvailabilityService(new PrismaAvailabilityRepository());
     const shifts = new ShiftService(new PrismaShiftRepository());
     const unavailableWeek = daysOfWeek.map(dayOfWeek => ({ dayOfWeek, startTime: null, endTime: null, isAvailable: false }));
-    const futureMonday = new Date();
-    futureMonday.setUTCHours(0, 0, 0, 0);
-    futureMonday.setUTCDate(futureMonday.getUTCDate() + ((8 - futureMonday.getUTCDay()) % 7 || 7));
-    const shiftDate = futureMonday.toISOString().slice(0, 10);
 
     const results = await Promise.allSettled([
       availability.replaceOwnWeek(employee.id, unavailableWeek),
-      shifts.create(manager.id, { employeeId: employee.id, date: shiftDate, startTime: '09:00', endTime: '17:00', role: 'team-member' }),
+      shifts.create(manager.id, { employeeId: employee.id, date: '2026-10-19', startTime: '09:00', endTime: '17:00', role: 'team-member' }),
     ]);
 
     expect(results.filter(result => result.status === 'fulfilled')).toHaveLength(1);
