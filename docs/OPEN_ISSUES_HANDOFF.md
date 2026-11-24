@@ -6,6 +6,8 @@ Latest verified integration branch: `feature/phase-0-foundation` (current defaul
 Latest verified integration commit: `e6bae759476ce9340f27957c20eff1f4937befab`
 Latest verified CI: `https://github.com/123114-robot/shiftops-ai-act3/actions/runs/38827402353` (`SUCCESS`)
 
+> **Current-state update (2026-10-16):** parts of this inventory retain historical phase context. U-03 now has one bounded real AMD Token Factory request verified in `docs/evidence/amd-token-factory-verified-2026-10-16.json`; competition/account compliance and AMD use in the public demo remain partial. U-07 now has a committed Prisma migration baseline plus guarded idempotent demo seed. U-08 is owner-confirmed deployed on Render from commit `7edfe2183d0502f55a343056f3d34c45bbe3b716`. Video, deck, cover image, full public workflow UAT and final authenticated submission remain open.
+
 This document is a handoff for GPT, Kimi, or a human reviewer. It records work that remains unfinished after the Phase 10 local browser evidence milestone. It is not authorization to implement, deploy, submit, merge, purchase services, or expose credentials. Proposed solutions must preserve backend authority, Manager approval, RBAC, auditability, and deterministic fallback behavior.
 
 ## Evidence labels
